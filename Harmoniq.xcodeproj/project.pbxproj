@@ -14,7 +14,7 @@
 		8C32B45E2D5AAA300058D259 /* Exceptions for "Harmoniq" folder in "Harmoniq" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				SupportingFiles/Info.plist,
 			);
 			target = 8C32B4482D5AAA2E0058D259 /* Harmoniq */;
 		};
@@ -147,7 +147,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CHC8JDRJ4U;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Harmoniq/Info.plist;
+				INFOPLIST_FILE = Harmoniq/SupportingFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -175,7 +175,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CHC8JDRJ4U;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Harmoniq/Info.plist;
+				INFOPLIST_FILE = Harmoniq/SupportingFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
