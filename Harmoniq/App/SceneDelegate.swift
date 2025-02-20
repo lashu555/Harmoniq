@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import SpotifyiOS
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    
+    var sessionManager: SPTSessionManager?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -25,6 +26,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = tabBarController
         
         window.makeKeyAndVisible()
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        if let sessionManager = (UIApplication.shared.delegate as? AppDelegate)?.sessionManager {
+            sessionManager.application(UIApplication.shared, open: url, options: [:])
+        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

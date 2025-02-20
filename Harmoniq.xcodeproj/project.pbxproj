@@ -6,8 +6,22 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8CA84DC62D67DE92005D749C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		8C32B4492D5AAA2E0058D259 /* Harmoniq.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Harmoniq.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CA84DBD2D67DAA7005D749C /*  Harmoniq-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = " Harmoniq-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -20,11 +34,25 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		8CA84DC72D67DE92005D749C /* Exceptions for "Harmoniq" folder in "Embed Frameworks" phase from "Harmoniq" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				Scenes/Spotify/SpotifyiOS.framework = (CodeSignOnCopy, RemoveHeadersOnCopy, );
+			};
+			buildPhase = 8CA84DC62D67DE92005D749C /* Embed Frameworks */;
+			membershipExceptions = (
+				Scenes/Spotify/SpotifyiOS.framework,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8C32B44B2D5AAA2E0058D259 /* Harmoniq */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				8C32B45E2D5AAA300058D259 /* Exceptions for "Harmoniq" folder in "Harmoniq" target */,
+				8CA84DC72D67DE92005D749C /* Exceptions for "Harmoniq" folder in "Embed Frameworks" phase from "Harmoniq" target */,
 			);
 			path = Harmoniq;
 			sourceTree = "<group>";
@@ -45,6 +73,7 @@
 		8C32B4402D5AAA2E0058D259 = {
 			isa = PBXGroup;
 			children = (
+				8CA84DBD2D67DAA7005D749C /*  Harmoniq-Bridging-Header.h */,
 				8C32B44B2D5AAA2E0058D259 /* Harmoniq */,
 				8C32B44A2D5AAA2E0058D259 /* Products */,
 			);
@@ -68,6 +97,7 @@
 				8C32B4452D5AAA2E0058D259 /* Sources */,
 				8C32B4462D5AAA2E0058D259 /* Frameworks */,
 				8C32B4472D5AAA2E0058D259 /* Resources */,
+				8CA84DC62D67DE92005D749C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -146,6 +176,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CHC8JDRJ4U;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Harmoniq/Scenes/Spotify",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Harmoniq/SupportingFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -158,9 +192,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = lashu.Harmoniq;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -174,6 +210,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CHC8JDRJ4U;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Harmoniq/Scenes/Spotify",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Harmoniq/SupportingFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -189,6 +229,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = lashu.Harmoniq;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

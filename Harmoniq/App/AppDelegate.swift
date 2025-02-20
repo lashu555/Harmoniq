@@ -7,16 +7,22 @@
 
 import UIKit
 import CoreData
+import SpotifyiOS
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
-    
+    var sessionManager: SPTSessionManager?
+    var configuration: SPTConfiguration?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let configuration = SPTConfiguration(clientID: SpotifyConstants.clientID, redirectURL: SpotifyConstants.redirectURL)
+        self.configuration = configuration
+        
+        // Initialize session manager
+        self.sessionManager = SPTSessionManager(configuration: configuration, delegate: self)
+        
         return true
     }
-    
     // MARK: UISceneSession Lifecycle
     
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
@@ -29,6 +35,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+    }
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        sessionManager?.application(app, open: url, options: options)
+        return true
     }
     
     // MARK: - Core Data stack
@@ -78,3 +88,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 }
 
+// MARK: - SPTSessionManagerDelegate
+extension AppDelegate: SPTSessionManagerDelegate {
+    func sessionManager(manager: SPTSessionManager, didInitiate session: SPTSession) {
+        // Handle successful login
+        print("Login success!")
+    }
+    
+    func sessionManager(manager: SPTSessionManager, didFailWith error: Error) {
+        // Handle login error
+        print("Login failed: \(error.localizedDescription)")
+    }
+    
+    func sessionManager(manager: SPTSessionManager, didRenew session: SPTSession) {
+        // Handle session renewal
+        print("Session renewed!")
+    }
+}

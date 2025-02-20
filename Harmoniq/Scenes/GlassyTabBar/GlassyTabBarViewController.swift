@@ -8,7 +8,7 @@ import UIKit
 import Combine
 
 public final class GlassyTabBarViewController: UITabBarController {
-    // MARK: - Properties
+    // MARK: Properties
     private var toolbarView: PlayerToolBarView?
     private let backdropView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
     private let fadeMask = CAGradientLayer()
@@ -67,7 +67,6 @@ public final class GlassyTabBarViewController: UITabBarController {
     }
     
     private func setupToolbar() {
-        // If toolbar already exists, do nothing
         guard toolbarView == nil else { return }
         
         toolbarView = PlayerToolBarView()
@@ -94,7 +93,7 @@ public final class GlassyTabBarViewController: UITabBarController {
         ])
     }
     
-    // MARK: - Layout
+    // MARK: Layout
     private func updateBackdropLayout() {
         let toolbarHeight = toolbarView?.frame.height ?? 0
         let backdropHeight = tabBar.frame.height + toolbarHeight + (isPlayerToolbarActive ? 12 : 0)
@@ -124,7 +123,8 @@ public final class GlassyTabBarViewController: UITabBarController {
     private func setupViewControllers() {
         viewControllers = [
             createNavController(HomeViewController(), title: "Home", icon: "house"),
-            createNavController(SearchViewController(), title: "Search", icon: "magnifyingglass")
+            createNavController(SearchViewController(), title: "Search", icon: "magnifyingglass"),
+            createNavController(LoginViewController(), title: "Login", icon: "lock.rectangle.on.rectangle")
         ]
     }
     
