@@ -144,6 +144,7 @@ class PlayerToolBarView: UIView {
     private func setupPlayButton() {
         playButton = UIButton()
         playButton.configuration = .toolbar()
+        playButton.addTarget(self, action: #selector(playButtonTapped), for: .touchUpInside)
         playButton.configuration?.image = .play
         
         buttonStackView.addArrangedSubview(playButton)
@@ -166,6 +167,10 @@ class PlayerToolBarView: UIView {
     
     @objc private func tapGestureRecognised(_ sender: UITapGestureRecognizer) {
         delegate?.toolbarView(self, tapGestureRecognised: sender)
+    }
+    
+    @objc private func playButtonTapped(_ sender: UIButton) {
+        delegate?.toolbarView(self, didTapPlayPause: sender)
     }
     
     private func updateUI(for song: HQSong?) {

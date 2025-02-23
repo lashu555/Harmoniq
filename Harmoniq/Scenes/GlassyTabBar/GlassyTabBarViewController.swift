@@ -63,16 +63,16 @@ public final class GlassyTabBarViewController: UITabBarController {
     
     private func setupBackdrop() {
         backdropView.clipsToBounds = true
+        backdropView.isUserInteractionEnabled = false
         view.insertSubview(backdropView, belowSubview: tabBar)
     }
     
     private func setupToolbar() {
         // If toolbar already exists, do nothing
         guard toolbarView == nil else { return }
-        
         toolbarView = PlayerToolBarView()
         guard let toolbarView = toolbarView else { return }
-        
+        toolbarView.delegate = self
         toolbarView.translatesAutoresizingMaskIntoConstraints = false
         toolbarView.song = HQSong(artwork: UIImage(systemName: "music.note")!, title: "Song Title")
         view.addSubview(toolbarView)
@@ -167,12 +167,26 @@ public final class GlassyTabBarViewController: UITabBarController {
     }
 }
 extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
+    func toolbarView(_ toolbarView: PlayerToolBarView, didTapPlayPause button: UIButton) {
+        print("play tapped")
+        let nowPlayingVC = NowPlayingViewController()
+        guard let audioURL = Bundle.main.url(forResource: "02. CRAZY", withExtension: "m4a") else {
+            fatalError("Could not find audio file!")
+        }
+        nowPlayingVC.audioURL = audioURL
+        navigationController?.pushViewController(nowPlayingVC, animated: true)
+    }
+    
     func toolbarView(_ toolbarView: PlayerToolBarView, tapGestureRecognised tapGestureRecogniser: UITapGestureRecognizer) {
         print("Toolbar tapped")
+        let nowPlayingVC = NowPlayingViewController()
+        guard let audioURL = Bundle.main.url(forResource: "02. CRAZY", withExtension: "m4a") else {
+            fatalError("Could not find audio file!")
+        }
+        nowPlayingVC.audioURL = audioURL
+        navigationController?.pushViewController(nowPlayingVC, animated: true)
     }
 }
-
-
 
 
 // MARK: - Color Processing Protocol
