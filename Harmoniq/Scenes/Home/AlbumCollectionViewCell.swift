@@ -46,9 +46,9 @@ class AlbumCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with topPick: TopPick) {
-        caption.text = topPick.caption
-        albumTeaser.configure(with: topPick.albumInfo)
+    func configure(with topPick: AlbumElement) {
+        caption.text = "made for you"
+        albumTeaser.configure(with: topPick)
     }
 }
 

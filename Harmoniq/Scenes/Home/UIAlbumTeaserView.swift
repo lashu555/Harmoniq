@@ -90,13 +90,13 @@ class UIAlbumTeaserView: UIView {
     }
     
     // MARK: Configure Method
-    func configure(with albumInfo: AlbumInfo) {
-        self.albumInfo = albumInfo
-        titleLabel.text = albumInfo.title
+    func configure(with albumInfo: AlbumElement) {
+        
+        titleLabel.text = albumInfo.name
         artistLabel.text = albumInfo.artist
         yearLabel.text = albumInfo.releaseYear
         
-        if let url = URL(string: albumInfo.imageURLString) {
+        if let url = URL(string: albumInfo.image) {
             downloadImage(from: url) { [weak self] image in
                 DispatchQueue.main.async {
                     self?.imageView.image = image

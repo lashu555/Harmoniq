@@ -8,6 +8,8 @@ import UIKit
 
 class HomeViewController: UIViewController {
     // MARK: Properties
+    private let homeViewModel = HomeViewModel()
+    
     private let homeTable : UITableView = {
         let tv = UITableView()
         tv.translatesAutoresizingMaskIntoConstraints = false
@@ -18,6 +20,14 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(homeTable)
+        setupUI()
+        homeViewModel.onSet = {
+            self.homeTable.reloadData()
+        }
+        homeViewModel.fetchAlbums()
+    }
+    
+    private func setupUI() {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Listen Now"
         navigationController?.navigationBar.tintColor = .label
@@ -52,8 +62,7 @@ extension HomeViewController : UITableViewDataSource, UITableViewDelegate {
         cell.delegate = self
         switch indexPath.row {
         case 0:
-            cell.configure(with: "Top Picks For You", topPicks: [
-                TopPick(caption: "meow", title: "meow", artist: "MEOR", releaseYear: "2023", imageURL: "https://developer.apple.com/swift/images/swift-og.png"),TopPick(caption: "meow", title: "meow", artist: "MEOR", releaseYear: "2023", imageURL: "https://developer.apple.com/swift/images/swift-og.png"),TopPick(caption: "meow", title: "meow", artist: "MEOR", releaseYear: "2023", imageURL: "https://developer.apple.com/swift/images/swift-og.png"),TopPick(caption: "meow", title: "meow", artist: "MEOR", releaseYear: "2023", imageURL: "https://developer.apple.com/swift/images/swift-og.png"),TopPick(caption: "meow", title: "meow", artist: "MEOR", releaseYear: "2023", imageURL: "https://developer.apple.com/swift/images/swift-og.png"),TopPick(caption: "meow", title: "meow", artist: "MEOR", releaseYear: "2023", imageURL: "https://developer.apple.com/swift/images/swift-og.png")])
+            cell.configure(with: "Top Picks For You", topPicks: homeViewModel.albums)
             return cell
         case 1:
             let cell = homeTable.dequeueReusableCell(withIdentifier: "simpleHomeTableCell", for: indexPath) as! SimpleHomeTableViewCell
@@ -67,6 +76,11 @@ extension HomeViewController : UITableViewDataSource, UITableViewDelegate {
 }
 
 extension HomeViewController: HomeTableViewCellDelegate {
+    func didSelectItem(topPick: AlbumElement) {
+        print(topPick.artist)
+
+    }
+    
     func didSelectItem(topPick: TopPick) {
         let detailVC = AlbumDetailViewController()
         let af = AlbumInfo(title: "me", artist: "me", imageURLString: "https://i.scdn.co/image/ab67616d0000b273c0fd19def5108123e077d634", releaseYear: "2023")
