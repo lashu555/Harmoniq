@@ -10,11 +10,12 @@ import UIKit
 class AlbumSongTableViewCell: UITableViewCell {
     static let identifier = "SongTableViewCell"
     
-    private let songNumberLabel: UILabel = {
-        let label = UILabel()
+    private let songNumberLabel: UIButton = {
+        let label = UIButton()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .secondaryLabel
+        label.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        label.tintColor = UIColor(red: 0.0, green: 0.6, blue: 0.6, alpha: 1.0)
+        label.setTitleColor(.secondaryLabel, for: .normal)
         return label
     }()
     
@@ -66,11 +67,13 @@ class AlbumSongTableViewCell: UITableViewCell {
         ])
     }
     func configure(with song: Song){
-        songNumberLabel.text = "#"
         songTitleLabel.text = song.title
-        let totalSeconds = Double(song.duration) ?? 0.0
-        let minutes = Int(totalSeconds) / 60
-        let seconds = Int(totalSeconds) % 60
-        durationLabel.text = "\(minutes):\(seconds)"
+        var formattedDuration = ""
+        if let totalSeconds = Double(song.duration) {
+            let minutes = Int(totalSeconds) / 60
+            let seconds = Int(totalSeconds) % 60
+            formattedDuration = String(format: "%d:%02d", minutes, seconds)
+        }
+        durationLabel.text = formattedDuration
     }
 }

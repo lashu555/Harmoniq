@@ -95,7 +95,7 @@ class UIAlbumTeaserView: UIView {
         titleLabel.text = albumInfo.name
         artistLabel.text = albumInfo.artist
         yearLabel.text = albumInfo.releaseYear
-        
+        imageView.kf.indicatorType = .activity
         if let url = URL(string: albumInfo.image) {
             imageView.kf.setImage(with: url, placeholder: UIImage(systemName: "photo.badge.magnifyingglass.fill")) { result in
                 switch result {
