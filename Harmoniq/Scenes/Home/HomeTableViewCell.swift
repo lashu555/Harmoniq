@@ -84,7 +84,7 @@ extension HomeTableViewCell: UICollectionViewDelegate, UICollectionViewDataSourc
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedTopPick = topPs[indexPath.row]
-        delegate?.didSelectItem(topPick: selectedTopPick)
+        delegate?.didSelectItem(topPick: selectedTopPick, indexPath: indexPath.row)
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "albumCollectionCell", for: indexPath) as! AlbumCollectionViewCell
@@ -108,5 +108,5 @@ extension HomeTableViewCell: UICollectionViewDelegate, UICollectionViewDataSourc
 }
 
 protocol HomeTableViewCellDelegate: AnyObject {
-    func didSelectItem(topPick: AlbumElement)
+    func didSelectItem(topPick: AlbumElement, indexPath: Int)
 }

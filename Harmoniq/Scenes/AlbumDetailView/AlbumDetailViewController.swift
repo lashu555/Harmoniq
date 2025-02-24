@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import Kingfisher
 
 class AlbumDetailViewController: UIViewController {
     var albumInfo: AlbumInfo?
+    var album: AlbumElement?
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -110,12 +112,12 @@ class AlbumDetailViewController: UIViewController {
         setupConstraints()
         setupTableView()
     }
-    func configure(with albumInfo: AlbumInfo){
-        self.albumInfo = albumInfo
-        albumCoverImageView.image = UIImage(named: "cover")
-        albumNameLabel.text = albumInfo.title
-        artistNameLabel.text = albumInfo.artist
-        releaseYearLabel.text = albumInfo.releaseYear
+    func configure(with album: AlbumElement){
+        self.album = album
+        albumCoverImageView.kf.setImage(with: URL(string: album.image))
+        albumNameLabel.text = album.artist
+        artistNameLabel.text = album.name
+        releaseYearLabel.text = album.releaseYear
         genreLabel.text = "genre"
     }
     private func setupUI() {
@@ -198,7 +200,8 @@ class AlbumDetailViewController: UIViewController {
 // MARK: - UITableViewDelegate & UITableViewDataSource
 extension AlbumDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        guard let album = album else { return 0 }
+        return album.songs.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -209,8 +212,8 @@ extension AlbumDetailViewController: UITableViewDelegate, UITableViewDataSource 
             return UITableViewCell()
         }
         
-       
-        cell.configure(number: indexPath.row + 1, title: "Song Title", duration: "3:45")
+        guard let album = album else { return cell }
+        cell.configure(with: album.songs[indexPath.row])
         
         return cell
     }

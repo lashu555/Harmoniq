@@ -76,23 +76,17 @@ extension HomeViewController : UITableViewDataSource, UITableViewDelegate {
 }
 
 extension HomeViewController: HomeTableViewCellDelegate {
-    func didSelectItem(topPick: AlbumElement) {
-        print(topPick.artist)
-
-    }
-    
-    func didSelectItem(topPick: TopPick) {
+    func didSelectItem(topPick: AlbumElement, indexPath: Int) {
         let detailVC = AlbumDetailViewController()
-        let af = AlbumInfo(title: "me", artist: "me", imageURLString: "https://i.scdn.co/image/ab67616d0000b273c0fd19def5108123e077d634", releaseYear: "2023")
-        detailVC.configure(with: af)
+        detailVC.configure(with: homeViewModel.albums[indexPath])
+        detailVC.album = homeViewModel.albums[indexPath]
         navigationController?.pushViewController(detailVC, animated: true)
     }
+    
 }
 extension HomeViewController: SimpleTableViewCellDelegate{
     func didSelectItem() {
         let detailVC = AlbumDetailViewController()
-        let af = AlbumInfo(title: "me", artist: "me", imageURLString: "https://i.scdn.co/image/ab67616d0000b273c0fd19def5108123e077d634", releaseYear: "2023")
-        detailVC.configure(with: af)
         navigationController?.pushViewController(detailVC, animated: true)
         guard let tabBarController = self.tabBarController else {
             NSLog("tabBarController is nil - layout update aborted")

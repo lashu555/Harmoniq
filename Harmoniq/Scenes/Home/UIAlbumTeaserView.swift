@@ -5,6 +5,7 @@
 //  Created by Lasha Tavberidze on 14.02.25.
 //
 import UIKit
+import Kingfisher
 
 struct AlbumInfo {
     let title: String
@@ -91,18 +92,19 @@ class UIAlbumTeaserView: UIView {
     
     // MARK: Configure Method
     func configure(with albumInfo: AlbumElement) {
-        
         titleLabel.text = albumInfo.name
         artistLabel.text = albumInfo.artist
         yearLabel.text = albumInfo.releaseYear
         
         if let url = URL(string: albumInfo.image) {
-            downloadImage(from: url) { [weak self] image in
-                DispatchQueue.main.async {
-                    self?.imageView.image = image
-                    if let averageColor = image?.averageColor {
-                        self?.imageAverageColorView.backgroundColor = averageColor
+            imageView.kf.setImage(with: url, placeholder: UIImage(systemName: "photo.badge.magnifyingglass.fill")) { result in
+                switch result {
+                case .success(let value):
+                    if let averageColor = value.image.averageColor {
+                        self.imageAverageColorView.backgroundColor = averageColor
                     }
+                case .failure(let error):
+                    print("Error: \(error)")
                 }
             }
         }
@@ -131,6 +133,13 @@ class UIAlbumTeaserView: UIView {
         }
         task.resume()
     }
+    func prepareForReuse() {
+           imageView.image = nil
+           titleLabel.text = nil
+           artistLabel.text = nil
+           yearLabel.text = nil
+           imageAverageColorView.backgroundColor = nil
+       }
 }
 
 extension UIImage {

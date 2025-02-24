@@ -65,10 +65,12 @@ class AlbumSongTableViewCell: UITableViewCell {
             durationLabel.widthAnchor.constraint(equalToConstant: 50)
         ])
     }
-    
-    func configure(number: Int, title: String, duration: String) {
-        songNumberLabel.text = "\(number)"
-        songTitleLabel.text = title
-        durationLabel.text = duration
+    func configure(with song: Song){
+        songNumberLabel.text = "#"
+        songTitleLabel.text = song.title
+        let totalSeconds = Double(song.duration) ?? 0.0
+        let minutes = Int(totalSeconds) / 60
+        let seconds = Int(totalSeconds) % 60
+        durationLabel.text = "\(minutes):\(seconds)"
     }
 }
