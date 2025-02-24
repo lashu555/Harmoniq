@@ -152,7 +152,7 @@ public final class GlassyTabBarViewController: UITabBarController {
     }
     
     private func updateTabBarColors(with color: UIColor) {
-        let invertedColor = color.inverted()
+        let invertedColor = color.enhancedInverted()
         UIView.animate(withDuration: 0.3) {
             self.tabBar.tintColor = invertedColor
             self.tabBar.unselectedItemTintColor = invertedColor.withAlphaComponent(0.6)
@@ -244,3 +244,24 @@ extension UIColor {
     }
 }
 
+extension UIColor {
+    func enhancedInverted() -> UIColor {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        self.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        // Enhance the inversion by increasing the contrast
+        let invertedRed = 1.0 - red
+        let invertedGreen = 1.0 - green
+        let invertedBlue = 1.0 - blue
+        
+        // Ensure the colors are more prominent
+        let enhancedRed = min(max(invertedRed * 1.2, 0), 1)
+        let enhancedGreen = min(max(invertedGreen * 1.2, 0), 1)
+        let enhancedBlue = min(max(invertedBlue * 1.2, 0), 1)
+        
+        return UIColor(red: enhancedRed, green: enhancedGreen, blue: enhancedBlue, alpha: alpha)
+    }
+}
