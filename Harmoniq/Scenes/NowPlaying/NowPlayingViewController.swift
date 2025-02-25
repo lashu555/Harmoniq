@@ -11,7 +11,7 @@ class NowPlayingViewController: UIViewController {
     
     let audioPlayer = HQAudioPlayer.shared
     var audioURL: URL?
-    var song: HQSong? {
+    var song: Song? {
         didSet { updateUI() }
     }
     
@@ -187,7 +187,6 @@ class NowPlayingViewController: UIViewController {
     private func updateUI() {
         songLabel.text = song?.title
         artistLabel.text = song?.title
-        artworkImageView.image = song?.artwork
     }
     
     private func updatePlayPauseButton(isPlaying: Bool) {

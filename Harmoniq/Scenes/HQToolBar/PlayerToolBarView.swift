@@ -34,7 +34,7 @@ class PlayerToolBarView: UIView {
         }
     }
     
-    var song: HQSong? = nil {
+    var song: Song? = nil {
         didSet { updateUI(for: song) }
     }
     
@@ -173,8 +173,7 @@ class PlayerToolBarView: UIView {
         delegate?.toolbarView(self, didTapPlayPause: sender)
     }
     
-    private func updateUI(for song: HQSong?) {
-        artworkView.image = song?.artwork
+    private func updateUI(for song: Song?) {
         titleLabeL.text = song?.title
     }
 }

@@ -11,6 +11,7 @@ import Kingfisher
 class AlbumDetailViewController: UIViewController {
     var albumInfo: AlbumInfo?
     var album: AlbumElement?
+    var delegate: AlbumDetailViewControllerDelegate?
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -214,11 +215,22 @@ extension AlbumDetailViewController: UITableViewDelegate, UITableViewDataSource 
         
         guard let album = album else { return cell }
         cell.configure(with: album.songs[indexPath.row])
-        
+        cell.onTap = {
+            let nowPlayingViewController = NowPlayingViewController()
+            if let songURL = URL(string: album.songs[indexPath.row].url) {
+                nowPlayingViewController.audioURL = songURL
+                self.delegate?.didPlaySong(album.songs[indexPath.row])
+                self.navigationController?.pushViewController(nowPlayingViewController, animated: true)
+            } else {
+                print("Invalid URL")
+            }        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
+}
+protocol AlbumDetailViewControllerDelegate: AnyObject {
+    func didPlaySong(_ song: Song)
 }

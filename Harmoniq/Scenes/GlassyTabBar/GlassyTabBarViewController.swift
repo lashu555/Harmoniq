@@ -74,7 +74,6 @@ public final class GlassyTabBarViewController: UITabBarController {
         guard let toolbarView = toolbarView else { return }
         toolbarView.delegate = self
         toolbarView.translatesAutoresizingMaskIntoConstraints = false
-        toolbarView.song = HQSong(artwork: UIImage(systemName: "music.note")!, title: "Song Title")
         view.addSubview(toolbarView)
         setupToolbarConstraints()
     }
@@ -155,7 +154,7 @@ public final class GlassyTabBarViewController: UITabBarController {
         let invertedColor = color.enhancedInverted()
         UIView.animate(withDuration: 0.3) {
             self.tabBar.tintColor = invertedColor
-            self.tabBar.unselectedItemTintColor = invertedColor.withAlphaComponent(0.6)
+            self.tabBar.unselectedItemTintColor = invertedColor.withAlphaComponent(1)
         }
     }
     
@@ -264,4 +263,10 @@ extension UIColor {
         
         return UIColor(red: enhancedRed, green: enhancedGreen, blue: enhancedBlue, alpha: alpha)
     }
+}
+extension GlassyTabBarViewController: AlbumDetailViewControllerDelegate{
+    func didPlaySong(_ song: Song) {
+        toolbarView?.song = song
+    }
+    
 }

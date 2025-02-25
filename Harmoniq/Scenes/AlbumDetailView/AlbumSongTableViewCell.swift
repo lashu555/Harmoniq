@@ -9,7 +9,8 @@ import UIKit
 
 class AlbumSongTableViewCell: UITableViewCell {
     static let identifier = "SongTableViewCell"
-    
+    var onTap: (() -> Void)?
+    weak var delegate: AlbumDetailSongCellDelegate?
     private let songNumberLabel: UIButton = {
         let label = UIButton()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +39,7 @@ class AlbumSongTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
         setupConstraints()
+        songNumberLabel.addTarget(self, action: #selector(handleSongNumberTap), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -76,4 +78,10 @@ class AlbumSongTableViewCell: UITableViewCell {
         }
         durationLabel.text = formattedDuration
     }
+    @objc func handleSongNumberTap(){
+        onTap?()
+    }
+}
+protocol AlbumDetailSongCellDelegate: AnyObject {
+    func albumDetailSongCell(didTapPlayButtonFor song: Song)
 }

@@ -7,59 +7,78 @@
 import Foundation
 import AVFoundation
 
-class HQAudioPlayer {
+protocol HQAudioPlayerDelegate: AnyObject {
+    func audioPlayerDidStartPlaying()
+    func audioPlayerDidFinishPlaying(successfully: Bool, error: Error?)
+    func audioPlayerDidFailWithError(error: Error)
+}
+
+class HQAudioPlayer: NSObject {
     static let shared = HQAudioPlayer()
-    private var audioPlayer: AVAudioPlayer?
+    
+    private var player: AVPlayer?
+    private var playerItem: AVPlayerItem?
     private var currentURL: URL?
-    
+    weak var delegate: HQAudioPlayerDelegate?
+
     var isPlaying: Bool {
-        return audioPlayer?.isPlaying ?? false
+        return player?.rate != 0
     }
-    
-    private init() {}
-    
+
+    private override init() {
+        super.init()
+    }
+
     func play(url: URL) {
-        if currentURL == url {
-            // Resume existing track
-            audioPlayer?.play()
+        if currentURL == url, let player = player {
+            player.seek(to: .zero)
+            player.play()
+            delegate?.audioPlayerDidStartPlaying()
         } else {
-            // Load new track
-            do {
-                audioPlayer = try AVAudioPlayer(contentsOf: url)
-                audioPlayer?.prepareToPlay()
-                audioPlayer?.play()
-                currentURL = url
-            } catch {
-                print("Error loading audio: \(error)")
-            }
+            currentURL = url
+            playerItem = AVPlayerItem(url: url)
+            player = AVPlayer(playerItem: playerItem)
+            
+            // Observe when the audio finishes playing
+            NotificationCenter.default.addObserver(self, selector: #selector(audioDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
+
+            // Play
+            player?.play()
+            delegate?.audioPlayerDidStartPlaying()
         }
     }
-    
+
     func togglePlayback() {
-        guard let player = audioPlayer else { return }
-        
-        if player.isPlaying {
+        guard let player = player else { return }
+
+        if player.rate > 0 {
             pause()
         } else {
             player.play()
+            delegate?.audioPlayerDidStartPlaying()
         }
     }
-    
+
     func pause() {
-        audioPlayer?.pause()
+        player?.pause()
     }
-    
+
     func stop() {
-        audioPlayer?.stop()
-        audioPlayer?.currentTime = 0
+        player?.pause()
+        player?.seek(to: .zero)
         currentURL = nil
     }
-    
+
     var currentTime: TimeInterval {
-        return audioPlayer?.currentTime ?? 0
+        return player?.currentTime().seconds ?? 0
     }
-    
+
     var duration: TimeInterval {
-        return audioPlayer?.duration ?? 0
+        return player?.currentItem?.duration.seconds ?? 0
+    }
+
+    @objc private func audioDidFinishPlaying() {
+        delegate?.audioPlayerDidFinishPlaying(successfully: true, error: nil)
     }
 }
+
