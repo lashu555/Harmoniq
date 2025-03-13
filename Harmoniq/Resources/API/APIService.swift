@@ -56,22 +56,18 @@ class APIService {
                 return
             }
             
-            // Log HTTP response details
             if let httpResponse = response as? HTTPURLResponse {
                 print("HTTP Status Code: \(httpResponse.statusCode)")
             }
             
-            // Check if we got data
             guard let data = data else {
                 print("No data received")
                 completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
                 return
             }
             
-            // Log the size of data
             print("Received data size: \(data.count) bytes")
             
-            // Try to print the raw response as string
             if let responseString = String(data: data, encoding: .utf8) {
                 print("Raw response: \(responseString)")
             }

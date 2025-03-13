@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: - AlbumElement
 struct AlbumElement: Codable {
     let releaseYear, name, artist: String
     let songs: [Song]
@@ -20,7 +19,6 @@ struct AlbumElement: Codable {
     }
 }
 
-// MARK: - Song
 struct Song: Codable {
     let title: String
     let url: String

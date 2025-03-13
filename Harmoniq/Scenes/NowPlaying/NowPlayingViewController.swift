@@ -14,8 +14,7 @@ class NowPlayingViewController: UIViewController {
     var song: Song? {
         didSet { updateUI() }
     }
-    
-    // MARK: - UI Components
+    private var timer: Timer?
     private let backgroundView: UIVisualEffectView = {
         let blur = UIBlurEffect(style: .systemThickMaterialDark)
         return UIVisualEffectView(effect: blur)
@@ -88,7 +87,6 @@ class NowPlayingViewController: UIViewController {
         return slider
     }()
     
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -99,9 +97,17 @@ class NowPlayingViewController: UIViewController {
             audioPlayer.play(url: url)
             updatePlayPauseButton(isPlaying: true)
         }
+        if timer != nil {
+            timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
+        }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback)
+            try AVAudioSession.sharedInstance().setActive(true)
+        }catch{
+            print(error.localizedDescription)
+        }
     }
     
-    // MARK: - Setup Methods
     private func setupViews() {
         view.backgroundColor = .black
         view.addSubview(backgroundView)
@@ -183,8 +189,9 @@ class NowPlayingViewController: UIViewController {
     private func setupObservers() {
         remainingTimeLabel.text = String(audioPlayer.duration/60)
     }
-    
     private func updateUI() {
+        progressSlider.value = Float(audioPlayer.currentTime)
+        progressSlider.maximumValue = Float(audioPlayer.duration)
         songLabel.text = song?.title
         artistLabel.text = song?.title
     }
@@ -194,7 +201,6 @@ class NowPlayingViewController: UIViewController {
         playPauseButton.setImage(UIImage(systemName: icon), for: .normal)
     }
     
-    // MARK: - Actions
     @objc private func playPauseTapped() {
         if audioPlayer.isPlaying {
             audioPlayer.togglePlayback()
@@ -204,12 +210,18 @@ class NowPlayingViewController: UIViewController {
             updatePlayPauseButton(isPlaying: true)
         }
     }
-    
+    @objc private func updateProgress(){
+        
+    }
     @objc private func previousTapped() {
-        // Previous track logic (to be implemented)
     }
     
-    @objc private func nextTapped() {
-        // Next track logic (to be implemented)
+    @objc private func nextTapped(_ sender: UIButton) {
+    }
+}
+
+extension NowPlayingViewController: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        nextTapped(nextButton)
     }
 }

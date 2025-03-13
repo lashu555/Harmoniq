@@ -40,7 +40,7 @@ class PlayerToolBarView: UIView {
     
     weak var delegate: HQPlayerToolBarViewDelegate? = nil
     
-    // MARK:  init(frame:)
+    // MARK: init(frame:)
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupShadowView()
@@ -53,12 +53,12 @@ class PlayerToolBarView: UIView {
         setupTapGestureRecogniser()
     }
     
-    // MARK: - init(coder:)
+    // MARK: init(coder:)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Private Methods
+    // MARK: Private Methods
     private func setupShadowView() {
         shadowView = UIView()
         shadowView.layer.shadowRadius = 10
@@ -174,6 +174,7 @@ class PlayerToolBarView: UIView {
     }
     
     private func updateUI(for song: Song?) {
+        self.song = song
         titleLabeL.text = song?.title
     }
 }

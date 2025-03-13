@@ -8,24 +8,25 @@ import UIKit
 import Combine
 
 public final class GlassyTabBarViewController: UITabBarController {
-    // MARK: - Properties
+    
+    // MARK: Properties
     private var toolbarView: PlayerToolBarView?
     private let backdropView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
     private let fadeMask = CAGradientLayer()
+    var currentlyPlayedAlbum: [Song]?
     private var cancellables = Set<AnyCancellable>()
     private let colorProcessor: ColorProcessing = DefaultColorProcessor()
     
     private var isPlayerToolbarActive: Bool = false
     
-    
     // MARK: Lifecycle
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         showPlayerToolbar()
         setupView()
         updateVisuals()
     }
-    
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updateBackdropLayout()
@@ -68,7 +69,6 @@ public final class GlassyTabBarViewController: UITabBarController {
     }
     
     private func setupToolbar() {
-        // If toolbar already exists, do nothing
         guard toolbarView == nil else { return }
         toolbarView = PlayerToolBarView()
         guard let toolbarView = toolbarView else { return }
@@ -93,7 +93,7 @@ public final class GlassyTabBarViewController: UITabBarController {
         ])
     }
     
-    // MARK: - Layout
+    // MARK: Layout
     private func updateBackdropLayout() {
         let toolbarHeight = toolbarView?.frame.height ?? 0
         let backdropHeight = tabBar.frame.height + toolbarHeight + (isPlayerToolbarActive ? 12 : 0)
@@ -137,7 +137,7 @@ public final class GlassyTabBarViewController: UITabBarController {
         return nav
     }
     
-    // MARK: - Color Processing
+    // MARK: Color Processing
     private func updateVisuals() {
         guard let image = captureBackground() else { return }
         

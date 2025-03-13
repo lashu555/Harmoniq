@@ -39,10 +39,8 @@ class HQAudioPlayer: NSObject {
             playerItem = AVPlayerItem(url: url)
             player = AVPlayer(playerItem: playerItem)
             
-            // Observe when the audio finishes playing
             NotificationCenter.default.addObserver(self, selector: #selector(audioDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
 
-            // Play
             player?.play()
             delegate?.audioPlayerDidStartPlaying()
         }
