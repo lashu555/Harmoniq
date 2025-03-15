@@ -216,14 +216,17 @@ extension AlbumDetailViewController: UITableViewDelegate, UITableViewDataSource 
         guard let album = album else { return cell }
         cell.configure(with: album.songs[indexPath.row])
         cell.onTap = {
-            let nowPlayingViewController = NowPlayingViewController()
-            if let songURL = URL(string: album.songs[indexPath.row].url) {
-                nowPlayingViewController.audioURL = songURL
-                self.delegate?.didPlaySong(album.songs[indexPath.row])
-                self.navigationController?.pushViewController(nowPlayingViewController, animated: true)
-            } else {
-                print("Invalid URL")
-            }        }
+            //            let nowPlayingViewController = NowPlayingViewController()
+            //            if let songURL = URL(string: album.songs[indexPath.row].url) {
+            //                nowPlayingViewController.audioURL = songURL
+            //                self.delegate?.didPlaySong(album.songs[indexPath.row])
+            //                self.navigationController?.pushViewController(nowPlayingViewController, animated: true)
+            //            } else {
+            //                print("Invalid URL")
+            //            }
+            guard let tb = self.tabBarController as? GlassyTabBarViewController else {return}
+            tb.currentlyPlayedSong = album.songs[indexPath.row]
+        }
         return cell
     }
     

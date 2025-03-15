@@ -13,17 +13,21 @@ public final class GlassyTabBarViewController: UITabBarController {
     private var toolbarView: PlayerToolBarView?
     private let backdropView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
     private let fadeMask = CAGradientLayer()
-    var currentlyPlayedAlbum: [Song]?
+    var currentlyPlayedSong: Song? {
+        didSet{
+            showPlayerToolbar()
+            toolbarView?.song = currentlyPlayedSong
+        }
+    }
     private var cancellables = Set<AnyCancellable>()
     private let colorProcessor: ColorProcessing = DefaultColorProcessor()
     
     private var isPlayerToolbarActive: Bool = false
     
     // MARK: Lifecycle
-
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
-        showPlayerToolbar()
         setupView()
         updateVisuals()
     }
@@ -33,8 +37,11 @@ public final class GlassyTabBarViewController: UITabBarController {
     }
     public func showPlayerToolbar() {
         isPlayerToolbarActive = true
-        setupToolbar()
+        if toolbarView == nil {
+            setupToolbar()
+        }
         updateBackdropLayout()
+        animateToolbarAppearance(show: true)
     }
     
     public func hidePlayerToolbar() {
@@ -92,7 +99,19 @@ public final class GlassyTabBarViewController: UITabBarController {
             toolbarView.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: -6)
         ])
     }
-    
+    private func animateToolbarAppearance(show: Bool, completion: ((Bool) -> Void)? = nil) {
+        guard let toolbarView = toolbarView else { return }
+        toolbarView.isHidden = false
+        toolbarView.transform = show ? CGAffineTransform(translationX: 0, y: toolbarView.frame.height) : .identity
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: {
+            toolbarView.transform = show ? .identity : CGAffineTransform(translationX: 0, y: toolbarView.frame.height)
+        }, completion: { finished in
+            if !show {
+                toolbarView.isHidden = true
+            }
+            completion?(finished)
+        })
+    }
     // MARK: Layout
     private func updateBackdropLayout() {
         let toolbarHeight = toolbarView?.frame.height ?? 0

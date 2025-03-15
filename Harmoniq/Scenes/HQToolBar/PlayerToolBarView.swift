@@ -174,7 +174,30 @@ class PlayerToolBarView: UIView {
     }
     
     private func updateUI(for song: Song?) {
-        self.song = song
-        titleLabeL.text = song?.title
+        DispatchQueue.main.async{
+            self.song = song
+            self.titleLabeL.text = song?.title
+        }
+    }
+}
+
+extension PlayerToolBarView {
+    
+    func show(withDuration duration: TimeInterval = 0.3) {
+        self.transform = CGAffineTransform(translationX: 0, y: self.frame.height)
+        self.isHidden = false
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: {
+            self.transform = .identity
+        }, completion: nil)
+    }
+    
+    func hide(withDuration duration: TimeInterval = 0.3, completion: ((Bool) -> Void)? = nil) {
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: {
+            self.transform = CGAffineTransform(translationX: 0, y: self.frame.height)
+        }, completion: { finished in
+            self.isHidden = true
+            self.transform = .identity
+            completion?(finished)
+        })
     }
 }
