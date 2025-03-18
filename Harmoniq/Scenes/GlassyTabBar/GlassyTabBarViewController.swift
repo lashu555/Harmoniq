@@ -186,22 +186,23 @@ public final class GlassyTabBarViewController: UITabBarController {
 }
 extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
     func toolbarView(_ toolbarView: PlayerToolBarView, didTapPlayPause button: UIButton) {
-        print("play tapped")
-        let nowPlayingVC = NowPlayingViewController()
-        guard let audioURL = Bundle.main.url(forResource: "02. CRAZY", withExtension: "m4a") else {
-            fatalError("Could not find audio file!")
-        }
-        nowPlayingVC.audioURL = audioURL
-        navigationController?.pushViewController(nowPlayingVC, animated: true)
+//        guard let song = currentlyPlayedSong else {return}
+//        let nowPlayingVC = NowPlayingViewController()
+//        nowPlayingVC.audioURL = URL(string: song.url)
+//        navigationController?.pushViewController(nowPlayingVC, animated: true)
+//        print("play tapped")
+//        let nowPlayingVC = NowPlayingViewController()
+//        guard let audioURL = Bundle.main.url(forResource: "02. CRAZY", withExtension: "m4a") else {
+//            fatalError("Could not find audio file!")
+//        }
+//        nowPlayingVC.audioURL = audioURL
+//        navigationController?.pushViewController(nowPlayingVC, animated: true)
     }
     
     func toolbarView(_ toolbarView: PlayerToolBarView, tapGestureRecognised tapGestureRecogniser: UITapGestureRecognizer) {
-        print("Toolbar tapped")
+        guard let song = currentlyPlayedSong else {return}
         let nowPlayingVC = NowPlayingViewController()
-        guard let audioURL = Bundle.main.url(forResource: "02. CRAZY", withExtension: "m4a") else {
-            fatalError("Could not find audio file!")
-        }
-        nowPlayingVC.audioURL = audioURL
+        nowPlayingVC.audioURL = URL(string: song.url)
         navigationController?.pushViewController(nowPlayingVC, animated: true)
     }
 }
