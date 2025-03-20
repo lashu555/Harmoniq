@@ -33,6 +33,14 @@ class AlbumDetailViewController: UIViewController {
         return imageView
     }()
     
+    private var buttonStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
     
     private var albumNameLabel: UILabel = {
         let label = UILabel()
@@ -123,13 +131,15 @@ class AlbumDetailViewController: UIViewController {
     }
     private func setupUI() {
         view.backgroundColor = .systemBackground
+        buttonStackView.addArrangedSubview(playButton)
+        buttonStackView.addArrangedSubview(shuffleButton)
         
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
         [albumCoverImageView, albumNameLabel, artistNameLabel,
-         genreLabel, bulletLabel, releaseYearLabel, playButton, shuffleButton,
-         songsTableView].forEach { contentView.addSubview($0) }
+         genreLabel, bulletLabel, releaseYearLabel,
+         buttonStackView, songsTableView].forEach { contentView.addSubview($0) }
     }
     
     private func setupConstraints() {
@@ -170,16 +180,19 @@ class AlbumDetailViewController: UIViewController {
             
             playButton.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 20),
             playButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            playButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.43),
             playButton.heightAnchor.constraint(equalToConstant: 44),
             
             shuffleButton.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 20),
             shuffleButton.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 16),
             shuffleButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            shuffleButton.widthAnchor.constraint(equalTo: playButton.widthAnchor),
             shuffleButton.heightAnchor.constraint(equalToConstant: 44),
             
-            songsTableView.topAnchor.constraint(equalTo: shuffleButton.bottomAnchor, constant: 20),
+            buttonStackView.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 20),
+            buttonStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            buttonStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            buttonStackView.heightAnchor.constraint(equalToConstant: 44),
+            
+            songsTableView.topAnchor.constraint(equalTo: buttonStackView.bottomAnchor, constant: 20),
             songsTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             songsTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             songsTableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
@@ -216,14 +229,6 @@ extension AlbumDetailViewController: UITableViewDelegate, UITableViewDataSource 
         guard let album = album else { return cell }
         cell.configure(with: album.songs[indexPath.row])
         cell.onTap = {
-            //            let nowPlayingViewController = NowPlayingViewController()
-            //            if let songURL = URL(string: album.songs[indexPath.row].url) {
-            //                nowPlayingViewController.audioURL = songURL
-            //                self.delegate?.didPlaySong(album.songs[indexPath.row])
-            //                self.navigationController?.pushViewController(nowPlayingViewController, animated: true)
-            //            } else {
-            //                print("Invalid URL")
-            //            }
             guard let tb = self.tabBarController as? GlassyTabBarViewController else {return}
             tb.currentlyPlayedSong = album.songs[indexPath.row]
         }
