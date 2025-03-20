@@ -16,7 +16,7 @@ class NowPlayingViewController: UIViewController {
     }
     private var timer: Timer?
     private let backgroundView: UIVisualEffectView = {
-        let blur = UIBlurEffect(style: .systemThinMaterial)
+        let blur = UIBlurEffect(style: .systemMaterial)
         return UIVisualEffectView(effect: blur)
     }()
     
@@ -108,7 +108,6 @@ class NowPlayingViewController: UIViewController {
     }
     
     private func setupViews() {
-        view.backgroundColor = .black
         view.addSubview(backgroundView)
         view.addSubview(artworkImageView)
         view.addSubview(songLabel)

@@ -213,6 +213,7 @@ extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
         guard let song = currentlyPlayedSong else {return}
         let nowPlayingVC = NowPlayingViewController()
         nowPlayingVC.audioURL = URL(string: song.url)
+        nowPlayingVC.song = song 
         present(nowPlayingVC, animated: true)
     }
 }
