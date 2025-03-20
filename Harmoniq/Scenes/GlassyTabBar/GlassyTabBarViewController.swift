@@ -40,6 +40,7 @@ public final class GlassyTabBarViewController: UITabBarController {
         if toolbarView == nil {
             setupToolbar()
         }
+        updateToolbarPlayButton()
         updateBackdropLayout()
         animateToolbarAppearance(show: true)
     }
@@ -183,27 +184,36 @@ public final class GlassyTabBarViewController: UITabBarController {
             view.layer.render(in: context.cgContext)
         }
     }
+    private func setupPlayerObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(playerStateChanged),
+            name: .AVPlayerItemDidPlayToEndTime,
+            object: nil
+        )
+    }
+
+    @objc private func playerStateChanged() {
+        updateToolbarPlayButton()
+    }
 }
 extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
     func toolbarView(_ toolbarView: PlayerToolBarView, didTapPlayPause button: UIButton) {
-//        guard let song = currentlyPlayedSong else {return}
-//        let nowPlayingVC = NowPlayingViewController()
-//        nowPlayingVC.audioURL = URL(string: song.url)
-//        navigationController?.pushViewController(nowPlayingVC, animated: true)
-//        print("play tapped")
-//        let nowPlayingVC = NowPlayingViewController()
-//        guard let audioURL = Bundle.main.url(forResource: "02. CRAZY", withExtension: "m4a") else {
-//            fatalError("Could not find audio file!")
-//        }
-//        nowPlayingVC.audioURL = audioURL
-//        navigationController?.pushViewController(nowPlayingVC, animated: true)
+        HQAudioPlayer.shared.togglePlayback()
+        updateToolbarPlayButton()
     }
-    
+
+    private func updateToolbarPlayButton() {
+        let isPlaying = HQAudioPlayer.shared.isPlaying
+        toolbarView?.playButton.configuration?.image = isPlaying ?     UIImage(systemName: "pause.fill")
+ : UIImage(systemName: "play.fill")
+    }
+
     func toolbarView(_ toolbarView: PlayerToolBarView, tapGestureRecognised tapGestureRecogniser: UITapGestureRecognizer) {
         guard let song = currentlyPlayedSong else {return}
         let nowPlayingVC = NowPlayingViewController()
         nowPlayingVC.audioURL = URL(string: song.url)
-        navigationController?.pushViewController(nowPlayingVC, animated: true)
+        present(nowPlayingVC, animated: true)
     }
 }
 

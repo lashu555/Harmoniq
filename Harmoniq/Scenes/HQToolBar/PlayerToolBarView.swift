@@ -14,7 +14,7 @@ class PlayerToolBarView: UIView {
     private var artworkView: UIImageView!
     private var titleLabeL: UILabel!
     private var buttonStackView: UIStackView!
-    private var playButton: UIButton!
+     var playButton: UIButton!
     private var forwardButton: UIButton!
     
     // MARK: Public Properties

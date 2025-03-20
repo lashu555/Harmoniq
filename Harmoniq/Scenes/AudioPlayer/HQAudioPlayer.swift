@@ -18,7 +18,7 @@ class HQAudioPlayer: NSObject {
     
     private var player: AVPlayer?
     private var playerItem: AVPlayerItem?
-    private var currentURL: URL?
+    var currentURL: URL?
     weak var delegate: HQAudioPlayerDelegate?
 
     var isPlaying: Bool {
@@ -35,14 +35,19 @@ class HQAudioPlayer: NSObject {
             player.play()
             delegate?.audioPlayerDidStartPlaying()
         } else {
+            if let playerItem = playerItem {
+                playerItem.removeObserver(self, forKeyPath: "status")
+                NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
+            }
+        
             currentURL = url
             playerItem = AVPlayerItem(url: url)
             player = AVPlayer(playerItem: playerItem)
             
             NotificationCenter.default.addObserver(self, selector: #selector(audioDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
-
+            playerItem?.addObserver(self, forKeyPath: "status", options: [.old, .new], context: nil)
+            
             player?.play()
-            delegate?.audioPlayerDidStartPlaying()
         }
     }
 
@@ -65,6 +70,12 @@ class HQAudioPlayer: NSObject {
         player?.pause()
         player?.seek(to: .zero)
         currentURL = nil
+        if let playerItem = playerItem {
+            NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
+            playerItem.removeObserver(self, forKeyPath: "status")
+        }
+        playerItem = nil
+        player = nil
     }
 
     var currentTime: TimeInterval {
@@ -72,11 +83,32 @@ class HQAudioPlayer: NSObject {
     }
 
     var duration: TimeInterval {
-        return player?.currentItem?.duration.seconds ?? 0
+        guard let currentItem = player?.currentItem else { return 0 }
+        let duration = CMTimeGetSeconds(currentItem.duration)
+        return duration.isFinite ? duration : 0
     }
 
     @objc private func audioDidFinishPlaying() {
         delegate?.audioPlayerDidFinishPlaying(successfully: true, error: nil)
     }
-}
 
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "status", let playerItem = object as? AVPlayerItem {
+            switch playerItem.status {
+            case .readyToPlay:
+                delegate?.audioPlayerDidStartPlaying()
+            case .failed:
+                delegate?.audioPlayerDidFailWithError(error: playerItem.error!)
+            default:
+                break
+            }
+        }
+    }
+
+    deinit {
+        if let playerItem = playerItem {
+            playerItem.removeObserver(self, forKeyPath: "status")
+        }
+        NotificationCenter.default.removeObserver(self)
+    }
+}

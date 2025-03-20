@@ -16,7 +16,7 @@ class NowPlayingViewController: UIViewController {
     }
     private var timer: Timer?
     private let backgroundView: UIVisualEffectView = {
-        let blur = UIBlurEffect(style: .systemThickMaterialDark)
+        let blur = UIBlurEffect(style: .systemThinMaterial)
         return UIVisualEffectView(effect: blur)
     }()
     
@@ -89,17 +89,16 @@ class NowPlayingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        audioPlayer.delegate = self
         setupViews()
         setupLayout()
-        setupObservers()
         
-        if let url = audioURL {
-            audioPlayer.play(url: url)
-            updatePlayPauseButton(isPlaying: true)
-        }
-        if timer != nil {
-            timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
-        }
+           if let url = audioURL, url != audioPlayer.currentURL {
+               audioPlayer.play(url: url)
+           }
+           updatePlayPauseButton(isPlaying: audioPlayer.isPlaying)
+        
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
             try AVAudioSession.sharedInstance().setActive(true)
@@ -184,16 +183,15 @@ class NowPlayingViewController: UIViewController {
             volumeSlider.topAnchor.constraint(equalTo: playPauseButton.bottomAnchor, constant: 40),
             volumeSlider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             volumeSlider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
-        ])    }
-    
-    private func setupObservers() {
-        remainingTimeLabel.text = String(audioPlayer.duration/60)
+        ])
     }
+    
     private func updateUI() {
-        progressSlider.value = Float(audioPlayer.currentTime)
         progressSlider.maximumValue = Float(audioPlayer.duration)
         songLabel.text = song?.title
         artistLabel.text = song?.title
+        progressSlider.value = Float(audioPlayer.currentTime)
+        updatePlayPauseButton(isPlaying: audioPlayer.isPlaying)
     }
     
     private func updatePlayPauseButton(isPlaying: Bool) {
@@ -210,18 +208,52 @@ class NowPlayingViewController: UIViewController {
             updatePlayPauseButton(isPlaying: true)
         }
     }
-    @objc private func updateProgress(){
+    
+    @objc private func updateProgress() {
+        let currentTime = audioPlayer.currentTime
+        let duration = audioPlayer.duration
+        let timeRemaining = duration - currentTime
         
+        progressSlider.value = Float(currentTime)
+        
+        currentTimeLabel.text = formatTime(currentTime)
+        remainingTimeLabel.text = "-\(formatTime(timeRemaining))"
     }
-    @objc private func previousTapped() {
+
+    private func formatTime(_ time: TimeInterval) -> String {
+        guard time.isFinite, !time.isNaN else {
+            return "0:00"
+        }
+        let minutes = Int(time) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%d:%02d", minutes, seconds)
     }
     
-    @objc private func nextTapped(_ sender: UIButton) {
+    @objc private func previousTapped() {
+        // Implement previous button functionality
+    }
+    
+    @objc private func nextTapped() {
+        // Implement next button functionality
     }
 }
 
-extension NowPlayingViewController: AVAudioPlayerDelegate {
+extension NowPlayingViewController: HQAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        nextTapped(nextButton)
+        nextTapped()
+    }
+    func audioPlayerDidStartPlaying() {
+        DispatchQueue.main.async {
+            self.progressSlider.maximumValue = Float(self.audioPlayer.duration)
+            self.updateProgress()
+        }
+    }
+
+    func audioPlayerDidFinishPlaying(successfully: Bool, error: Error?) {
+        // Handle playback finish (e.g., play next track)
+    }
+
+    func audioPlayerDidFailWithError(error: Error) {
+        // Handle errors (e.g., show alert)
     }
 }
