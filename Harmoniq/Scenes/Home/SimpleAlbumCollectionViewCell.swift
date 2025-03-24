@@ -35,7 +35,7 @@ class SimpleAlbumCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: Configure Method
-    func configure(with albumInfo: AlbumInfo){
+    func configure(with albumInfo: AlbumElement){
         simpleAlbumTeaser.configure(with: albumInfo)
     }
 }

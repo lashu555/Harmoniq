@@ -25,7 +25,7 @@ class HomeTableViewCell: UITableViewCell {
         return acv
     }()
     
-    private var topPs = Album()
+    private var topPs = Albums()
     
     weak var delegate: HomeTableViewCellDelegate?
     
@@ -70,7 +70,7 @@ class HomeTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(with header: String, topPicks: Album){
+    func configure(with header: String, topPicks: Albums){
         self.headerLabel.text = header
         self.topPs = topPicks
         self.albumCollectionView.reloadData()

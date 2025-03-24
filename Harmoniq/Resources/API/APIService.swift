@@ -11,7 +11,7 @@ class APIService {
     static let shared = APIService()
     private init() {}
     
-    func fetchAlbums(completion: @escaping (Result<Album, Error>) -> Void) {
+    func fetchAlbums(completion: @escaping (Result<Albums, Error>) -> Void) {
         let urlString = "https://67b8ebe251192bd378dc38ba.mockapi.io/HQ/albums"
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
@@ -30,7 +30,7 @@ class APIService {
             }
             
             do {
-                let albums = try JSONDecoder().decode(Album.self, from: data)
+                let albums = try JSONDecoder().decode(Albums.self, from: data)
                 completion(.success(albums))
             } catch {
                 completion(.failure(error))
@@ -39,7 +39,7 @@ class APIService {
         
         task.resume()
     }
-    func fetchAlbumsFromAPI(completion: @escaping (Result<Album, Error>) -> Void) {
+    func fetchAlbumsFromAPI(completion: @escaping (Result<Albums, Error>) -> Void) {
         let urlString = "https://67b8ebe251192bd378dc38ba.mockapi.io/HQ/albums"
         print("Attempting to fetch from: \(urlString)")
         
@@ -73,7 +73,7 @@ class APIService {
             }
             
             do {
-                let albums = try JSONDecoder().decode(Album.self, from: data)
+                let albums = try JSONDecoder().decode(Albums.self, from: data)
                 print("Successfully decoded \(albums.count) albums")
                 completion(.success(albums))
             } catch {

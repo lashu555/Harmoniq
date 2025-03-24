@@ -67,7 +67,7 @@ extension HomeViewController : UITableViewDataSource, UITableViewDelegate {
         case 1:
             let cell = homeTable.dequeueReusableCell(withIdentifier: "simpleHomeTableCell", for: indexPath) as! SimpleHomeTableViewCell
             cell.delegate = self
-            cell.configure(with: "Recents", albums: [AlbumInfo(title: "kittycat", artist: "asha", imageURLString: "https://i.scdn.co/image/ab67616d0000b273c0fd19def5108123e077d634", releaseYear: "2022"),AlbumInfo(title: "kittycat", artist: "asha", imageURLString: "https://i.scdn.co/image/ab67616d0000b273c0fd19def5108123e077d634", releaseYear: "2022"),AlbumInfo(title: "kittycat", artist: "asha", imageURLString: "https://i.scdn.co/image/ab67616d0000b273c0fd19def5108123e077d634", releaseYear: "2022"),AlbumInfo(title: "kittycat", artist: "asha", imageURLString: "https://i.scdn.co/image/ab67616d0000b273c0fd19def5108123e077d634", releaseYear: "2022"),AlbumInfo(title: "kittycat", artist: "asha", imageURLString: "https://i.scdn.co/image/ab67616d0000b273c0fd19def5108123e077d634", releaseYear: "2022")])
+            cell.configure(with: "Recents", albums: homeViewModel.albums)
             return cell
         default:
             return UITableViewCell()
@@ -85,8 +85,10 @@ extension HomeViewController: HomeTableViewCellDelegate {
     
 }
 extension HomeViewController: SimpleTableViewCellDelegate{
-    func didSelectItem() {
+    func didSelectItem(index: Int) {
         let detailVC = AlbumDetailViewController()
+        detailVC.configure(with: homeViewModel.albums[index])
+        detailVC.album = homeViewModel.albums[index]
         navigationController?.pushViewController(detailVC, animated: true)
         guard let tabBarController = self.tabBarController else {
             NSLog("tabBarController is nil - layout update aborted")

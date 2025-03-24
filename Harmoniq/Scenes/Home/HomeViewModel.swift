@@ -8,7 +8,7 @@
 import Foundation
 
 class HomeViewModel {
-    var albums: Album = [] {
+    var albums: Albums = [] {
         didSet{
             DispatchQueue.main.async {
                 self.onSet?()

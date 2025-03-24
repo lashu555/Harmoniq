@@ -53,7 +53,7 @@ class HQAudioPlayer: NSObject {
 
     func togglePlayback() {
         guard let player = player else { return }
-
+        
         if player.rate > 0 {
             pause()
         } else {

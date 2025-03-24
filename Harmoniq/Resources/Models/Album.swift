@@ -30,4 +30,4 @@ struct Song: Codable {
     }
 }
 
-typealias Album = [AlbumElement]
+typealias Albums = [AlbumElement]

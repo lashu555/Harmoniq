@@ -71,11 +71,11 @@ class UISimpleAlbumTeaserView: UIView {
         ])
     }
     
-    func configure(with albumInfo: AlbumInfo) {
-        titleLabel.text = albumInfo.title
+    func configure(with albumInfo: AlbumElement) {
+        titleLabel.text = albumInfo.name
         artistLabel.text = albumInfo.artist
         
-        if let url = URL(string: albumInfo.imageURLString) {
+        if let url = URL(string: albumInfo.image) {
             downloadImage(from: url) { [weak self] image in
                 DispatchQueue.main.async {
                     self?.imageView.image = image

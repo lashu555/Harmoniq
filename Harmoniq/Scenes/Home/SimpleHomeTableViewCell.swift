@@ -26,7 +26,7 @@ class SimpleHomeTableViewCell: UITableViewCell {
     }()
     
     weak var delegate: SimpleTableViewCellDelegate?
-    private var albums: [AlbumInfo] = []
+    private var albums: Albums = []
     // MARK: Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -73,7 +73,7 @@ class SimpleHomeTableViewCell: UITableViewCell {
     }
     
     //MARK: Configure
-    func configure(with title: String, albums: [AlbumInfo]){
+    func configure(with title: String, albums: Albums){
         self.headerLabel.text = title
         self.albums = albums
         self.albumCollectionView.reloadData()
@@ -88,12 +88,7 @@ extension SimpleHomeTableViewCell: UICollectionViewDelegate,UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = albumCollectionView.dequeueReusableCell(withReuseIdentifier: "SimpleAlbumCollectionCell", for: indexPath) as! SimpleAlbumCollectionViewCell
         guard !albums.isEmpty, albums.count > indexPath.row else {
-            cell.configure(with: AlbumInfo(
-                title: "No Album",
-                artist: "Unknown Artist",
-                imageURLString: "",
-                releaseYear: ""
-            ))
+            cell.configure(with: AlbumElement(releaseYear: "", name: "", artist: "", songs: [], image: "", id: ""))
             return cell
         }
         
@@ -113,9 +108,9 @@ extension SimpleHomeTableViewCell: UICollectionViewDelegate,UICollectionViewData
         return UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.didSelectItem()
+        delegate?.didSelectItem(index: indexPath.row)
     }
 }
 protocol SimpleTableViewCellDelegate: AnyObject{
-    func didSelectItem()
+    func didSelectItem(index: Int)
 }

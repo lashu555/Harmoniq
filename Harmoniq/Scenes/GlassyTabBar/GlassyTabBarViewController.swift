@@ -11,6 +11,7 @@ public final class GlassyTabBarViewController: UITabBarController {
     
     // MARK: Properties
     private var toolbarView: PlayerToolBarView?
+   // let audioPlayer = HQAudioPlayer.shared
     private let backdropView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
     private let fadeMask = CAGradientLayer()
     var currentlyPlayedSong: Song? {
@@ -35,6 +36,7 @@ public final class GlassyTabBarViewController: UITabBarController {
         super.viewDidLayoutSubviews()
         updateBackdropLayout()
     }
+    
     public func showPlayerToolbar() {
         isPlayerToolbarActive = true
         if toolbarView == nil {
@@ -69,7 +71,10 @@ public final class GlassyTabBarViewController: UITabBarController {
         }
         tabBar.standardAppearance = appearance
     }
-    
+//    private func updatePlayPauseButton(isPlaying: Bool) {
+//        let icon = isPlaying ? "pause.fill" : "play.fill"
+//        toolbarView?.playButton.setImage(UIImage(systemName: icon), for: .normal)
+//    }
     private func setupBackdrop() {
         backdropView.clipsToBounds = true
         backdropView.isUserInteractionEnabled = false
@@ -203,9 +208,9 @@ extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
         updateToolbarPlayButton()
     }
 
-    private func updateToolbarPlayButton() {
+    func updateToolbarPlayButton() {
         let isPlaying = HQAudioPlayer.shared.isPlaying
-        toolbarView?.playButton.configuration?.image = isPlaying ?     UIImage(systemName: "pause.fill")
+        toolbarView?.playButton.configuration?.image = isPlaying ? UIImage(systemName: "pause.fill")
  : UIImage(systemName: "play.fill")
     }
 
