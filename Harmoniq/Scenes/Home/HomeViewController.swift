@@ -8,7 +8,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     // MARK: Properties
-    private let homeViewModel = HomeViewModel()
+    let homeViewModel = HomeViewModel.shared
     
     private let homeTable : UITableView = {
         let tv = UITableView()

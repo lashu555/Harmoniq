@@ -8,6 +8,7 @@
 import Foundation
 
 class HomeViewModel {
+    static let shared = HomeViewModel()
     var albums: Albums = [] {
         didSet{
             DispatchQueue.main.async {

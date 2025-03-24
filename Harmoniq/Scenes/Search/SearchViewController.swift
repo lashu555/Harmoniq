@@ -9,56 +9,76 @@ import UIKit
 import AVFoundation
 
 class SearchViewController: UIViewController {
-
-    var player: AVPlayer?
-
+    let albumsViewModel = HomeViewModel.shared
+    let search : UISearchBar = {
+        let sb = UISearchBar()
+        sb.text = "Search"
+        return sb
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
-        let correctURLString = "https://archive.org/download/crazy-over-you-mp-3-160-k/Crazy%20Over%20You(MP3_160K).mp3"
-        guard let url = URL(string: correctURLString) else {
-            print("Invalid URL")
-            return
-        }
-        let playerItem = AVPlayerItem(url: url)
-        player = AVPlayer(playerItem: playerItem)
-        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { [weak self] _ in
-            print("Audio playback finished.")
-            DispatchQueue.main.async {
-                self?.player?.seek(to: .zero)
-                self?.player?.play()
-            }
-        }
-
-        player?.play()
-
-        let playPauseButton = UIButton(type: .system)
-        playPauseButton.setTitle("Pause", for: .normal)
-        playPauseButton.addTarget(self, action: #selector(togglePlayPause), for: .touchUpInside)
-        playPauseButton.frame = CGRect(x: 100, y: 200, width: 100, height: 50)
-        view.addSubview(playPauseButton)
+        
     }
 
-    @objc func togglePlayPause() {
-        if let player = player {
-            if player.isPlaying {
-                player.pause()
-                (self.view.subviews.first as? UIButton)?.setTitle("Play", for: .normal)
-            } else {
-                player.play()
-                (self.view.subviews.first as? UIButton)?.setTitle("Pause", for: .normal)
-
-            }
-        }
-    }
+   
 
 
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: self)
-    }
+
 }
 
-extension AVPlayer {
-    var isPlaying: Bool {
-        return rate > 0
-    }
-}
+
+//
+//class SearchViewController: UIViewController {
+//
+//    var player: AVPlayer?
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        let correctURLString = "https://archive.org/download/crazy-over-you-mp-3-160-k/Crazy%20Over%20You(MP3_160K).mp3"
+//        guard let url = URL(string: correctURLString) else {
+//            print("Invalid URL")
+//            return
+//        }
+//        let playerItem = AVPlayerItem(url: url)
+//        player = AVPlayer(playerItem: playerItem)
+//        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { [weak self] _ in
+//            print("Audio playback finished.")
+//            DispatchQueue.main.async {
+//                self?.player?.seek(to: .zero)
+//                self?.player?.play()
+//            }
+//        }
+//
+//        player?.play()
+//
+//        let playPauseButton = UIButton(type: .system)
+//        playPauseButton.setTitle("Pause", for: .normal)
+//        playPauseButton.addTarget(self, action: #selector(togglePlayPause), for: .touchUpInside)
+//        playPauseButton.frame = CGRect(x: 100, y: 200, width: 100, height: 50)
+//        view.addSubview(playPauseButton)
+//    }
+//
+//    @objc func togglePlayPause() {
+//        if let player = player {
+//            if player.isPlaying {
+//                player.pause()
+//                (self.view.subviews.first as? UIButton)?.setTitle("Play", for: .normal)
+//            } else {
+//                player.play()
+//                (self.view.subviews.first as? UIButton)?.setTitle("Pause", for: .normal)
+//
+//            }
+//        }
+//    }
+//
+//
+//    deinit {
+//        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: self)
+//    }
+//}
+//
+//extension AVPlayer {
+//    var isPlaying: Bool {
+//        return rate > 0
+//    }
+//}
