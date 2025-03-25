@@ -9,23 +9,26 @@ import UIKit
 import AVFoundation
 
 class SearchViewController: UIViewController {
+    
     let albumsViewModel = HomeViewModel.shared
-    let search : UISearchBar = {
-        let sb = UISearchBar()
-        sb.text = "Search"
-        return sb
-    }()
+    let searchController = UISearchController(searchResultsController: SearchResultViewController())
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        searchController.searchResultsUpdater = self
+        navigationItem.searchController = searchController
     }
-
-   
-
 
 
 }
+extension SearchViewController: UISearchBarDelegate, UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text else { return }
+        let vc = searchController.searchResultsController as? SearchResultViewController
+        vc?.view.backgroundColor = .red
+    }
 
+}
 
 //
 //class SearchViewController: UIViewController {
