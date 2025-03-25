@@ -17,17 +17,28 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         searchController.searchResultsUpdater = self
         navigationItem.searchController = searchController
+        if let searchResultsVC = searchController.searchResultsController as? SearchResultViewController {
+            var albums = albumsViewModel.albums
+            var songs: [Song] = []
+            for album in albums {
+                for song in album.songs {
+                    songs.append(song)
+                }
+            }
+            searchResultsVC.songs = songs
+        }
+        
     }
-
-
+    
+    
 }
 extension SearchViewController: UISearchBarDelegate, UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
         let vc = searchController.searchResultsController as? SearchResultViewController
-        vc?.view.backgroundColor = .red
+        vc?.updateSearchResults(for: text)
     }
-
+    
 }
 
 //

@@ -9,8 +9,12 @@ import UIKit
 
 class SearchResultViewController: UIViewController {
     
+    var songs: [Song] = []
+    var filteredSongs: [Song] = []
+    
     let tableView: UITableView = {
         let tv = UITableView()
+        tv.rowHeight = 58
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
@@ -19,8 +23,17 @@ class SearchResultViewController: UIViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.identifier )
         setUpUI()
+    }
+    
+    func updateSearchResults(for text: String){
+        if text.isEmpty {
+            filteredSongs = songs
+        } else {
+            filteredSongs = songs.filter { $0.title.lowercased().contains(text.lowercased()) }
+        }
+        tableView.reloadData()
     }
     
     private func setUpUI(){
@@ -37,12 +50,13 @@ class SearchResultViewController: UIViewController {
 extension SearchResultViewController: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        filteredSongs.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = "Row \(indexPath.row + 1)"
+        let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultTableViewCell.identifier, for: indexPath) as! SearchResultTableViewCell
+        cell.song = filteredSongs[indexPath.row]
+        
         return cell
     }
     
