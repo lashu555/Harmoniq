@@ -10,7 +10,7 @@ import UIKit
 class SearchResultTableViewCell: UITableViewCell {
     
     static let identifier = "SearchResultCell"
-    var onTap: (() -> Void)?
+    var onTap: ((Song) -> Void)?
     var song: Song? {
         didSet{
             guard let song else { return }
@@ -51,7 +51,6 @@ class SearchResultTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
         setUpUI()
     }
     
@@ -61,7 +60,6 @@ class SearchResultTableViewCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        onTap?()
     }
     
     private func setUpUI(){

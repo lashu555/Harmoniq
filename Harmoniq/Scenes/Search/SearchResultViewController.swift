@@ -56,8 +56,21 @@ extension SearchResultViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultTableViewCell.identifier, for: indexPath) as! SearchResultTableViewCell
         cell.song = filteredSongs[indexPath.row]
-        
+        cell.onTap = { song in
+            guard let tb = self.tabBarController as? GlassyTabBarViewController else {
+                print("no tab bar")
+                return}
+            tb.currentlyPlayedSong = song
+        }
         return cell
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let searchVC = self.presentingViewController as? SearchViewController {
+            guard let tabBar = searchVC.tabBarController as? GlassyTabBarViewController else {
+                print("no tab bar")
+                return}
+            tabBar.currentlyPlayedSong = filteredSongs[indexPath.row]
+        }
     
+    }
 }
