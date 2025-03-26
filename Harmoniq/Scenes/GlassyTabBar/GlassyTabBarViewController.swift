@@ -11,7 +11,8 @@ public final class GlassyTabBarViewController: UITabBarController {
     
     // MARK: Properties
     private var toolbarView: PlayerToolBarView?
-   // let audioPlayer = HQAudioPlayer.shared
+    private var overlayView: HQGradient!
+    // let audioPlayer = HQAudioPlayer.shared
     private let backdropView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterial))
     private let fadeMask = CAGradientLayer()
     var currentlyPlayedSong: Song? {
@@ -44,6 +45,7 @@ public final class GlassyTabBarViewController: UITabBarController {
         }
         updateToolbarPlayButton()
         updateBackdropLayout()
+        setupOverlayView()
         animateToolbarAppearance(show: true)
     }
     
@@ -61,7 +63,21 @@ public final class GlassyTabBarViewController: UITabBarController {
             setupToolbar()
         }
     }
-    
+    private func setupOverlayView() {
+        overlayView = HQGradient()
+        overlayView.locations = [0, 0.4, 1]
+        overlayView.colours = [.white.withAlphaComponent(0), .white.withAlphaComponent(1), .white.withAlphaComponent(0.2)]
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.insertSubview(overlayView, aboveSubview: backdropView)
+        
+        NSLayoutConstraint.activate([
+            overlayView.topAnchor.constraint(equalTo: toolbarView!.topAnchor),
+            overlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
     private func setupTabBarAppearance() {
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
@@ -121,7 +137,8 @@ public final class GlassyTabBarViewController: UITabBarController {
     // MARK: Layout
     private func updateBackdropLayout() {
         let toolbarHeight = toolbarView?.frame.height ?? 0
-        let backdropHeight = tabBar.frame.height + toolbarHeight + (isPlayerToolbarActive ? 12 : 0)
+        let backdropHeight = tabBar.frame.height
+        //+ toolbarHeight + (isPlayerToolbarActive ? 12 : 0)
         let backdropFrame = CGRect(
             x: 0,
             y: view.bounds.maxY - backdropHeight,
