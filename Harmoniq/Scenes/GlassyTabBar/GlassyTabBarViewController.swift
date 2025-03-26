@@ -63,6 +63,7 @@ public final class GlassyTabBarViewController: UITabBarController {
             setupToolbar()
         }
     }
+    
     private func setupOverlayView() {
         overlayView = HQGradient()
         overlayView.locations = [0, 0.4, 1]

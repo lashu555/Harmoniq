@@ -9,9 +9,11 @@ import UIKit
 import Kingfisher
 
 class AlbumDetailViewController: UIViewController {
+    
     var albumInfo: AlbumInfo?
     var album: AlbumElement?
     var delegate: AlbumDetailViewControllerDelegate?
+    
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -120,7 +122,9 @@ class AlbumDetailViewController: UIViewController {
         setupUI()
         setupConstraints()
         setupTableView()
+        setUpButtonTargets()
     }
+    
     func configure(with album: AlbumElement){
         self.album = album
         albumCoverImageView.kf.setImage(with: URL(string: album.image))
@@ -129,6 +133,12 @@ class AlbumDetailViewController: UIViewController {
         releaseYearLabel.text = album.releaseYear
         genreLabel.text = "genre"
     }
+    
+    private func setUpButtonTargets(){
+        shuffleButton.addTarget(self, action: #selector(shuffleAlbum), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(playAlbum), for: .touchUpInside)
+    }
+    
     private func setupUI() {
         view.backgroundColor = .systemBackground
         buttonStackView.addArrangedSubview(playButton)
@@ -208,6 +218,16 @@ class AlbumDetailViewController: UIViewController {
         songsTableView.delegate = self
         songsTableView.dataSource = self
         songsTableView.register(AlbumSongTableViewCell.self, forCellReuseIdentifier: AlbumSongTableViewCell.identifier)
+    }
+    
+    @objc private func playAlbum(){
+        guard let tb = self.tabBarController as? GlassyTabBarViewController else {return}
+        tb.currentlyPlayedSong = album!.songs[0]
+    }
+    
+    @objc private func shuffleAlbum(){
+        guard let tb = self.tabBarController as? GlassyTabBarViewController else {return}
+        tb.currentlyPlayedSong = album!.songs.randomElement()
     }
 }
 

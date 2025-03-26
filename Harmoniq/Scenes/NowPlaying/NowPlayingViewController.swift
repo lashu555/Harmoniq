@@ -149,10 +149,10 @@ class NowPlayingViewController: UIViewController {
             backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            artworkImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            artworkImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            artworkImageView.widthAnchor.constraint(equalToConstant: 250),
-            artworkImageView.heightAnchor.constraint(equalToConstant: 250),
+            artworkImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+            artworkImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            artworkImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            artworkImageView.widthAnchor.constraint(equalTo: artworkImageView.heightAnchor, multiplier: 1),
             
             songLabel.topAnchor.constraint(equalTo: artworkImageView.bottomAnchor, constant: 20),
             songLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
