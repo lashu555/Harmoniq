@@ -8,13 +8,14 @@
 import UIKit
 
 class UISimpleAlbumTeaserView: UIView {
+    
     private let imageView: UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
         view.backgroundColor = .systemGray6
-        view.layer.cornerRadius = 8 
+        view.layer.cornerRadius = 8
         return view
     }()
     
@@ -76,21 +77,11 @@ class UISimpleAlbumTeaserView: UIView {
         artistLabel.text = albumInfo.artist
         
         if let url = URL(string: albumInfo.image) {
-            downloadImage(from: url) { [weak self] image in
-                DispatchQueue.main.async {
-                    self?.imageView.image = image
-                }
+            DispatchQueue.main.async {
+                self.imageView.kf.setImage(with: url)
             }
+            
         }
     }
     
-    private func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, let image = UIImage(data: data) else {
-                completion(nil)
-                return
-            }
-            completion(image)
-        }.resume()
-    }
 }

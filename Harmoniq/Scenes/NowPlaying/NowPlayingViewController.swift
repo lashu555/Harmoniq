@@ -6,6 +6,7 @@
 //
 import UIKit
 import AVFoundation
+import Kingfisher
 
 class NowPlayingViewController: UIViewController {
     
@@ -186,9 +187,11 @@ class NowPlayingViewController: UIViewController {
     }
     
     private func updateUI() {
+        guard let song, let album = HomeViewModel.shared.getAlbumForSong(song, from: HomeViewModel.shared.albums), let imageURL = URL(string: album.image) else {return}
         progressSlider.maximumValue = Float(audioPlayer.duration)
-        songLabel.text = song?.title
-        artistLabel.text = song?.title
+        artworkImageView.kf.setImage(with: imageURL)
+        songLabel.text = song.title
+        artistLabel.text = album.artist
         progressSlider.value = Float(audioPlayer.currentTime)
         updatePlayPauseButton(isPlaying: audioPlayer.isPlaying)
     }

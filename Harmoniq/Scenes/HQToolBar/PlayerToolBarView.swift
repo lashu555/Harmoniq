@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class PlayerToolBarView: UIView {
     // MARK: Private Properties
@@ -174,9 +175,11 @@ class PlayerToolBarView: UIView {
     }
     
     private func updateUI(for song: Song?) {
+        guard let song, let album = HomeViewModel.shared.getAlbumForSong(song, from: HomeViewModel.shared.albums), let imageURL = URL(string: album.image) else {return}
         DispatchQueue.main.async{
             self.song = song
-            self.titleLabeL.text = song?.title
+            self.titleLabeL.text = song.title
+            self.artworkView.kf.setImage(with: imageURL)
         }
     }
 }

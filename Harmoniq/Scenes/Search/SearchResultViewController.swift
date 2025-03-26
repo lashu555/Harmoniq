@@ -14,7 +14,7 @@ class SearchResultViewController: UIViewController {
     
     let tableView: UITableView = {
         let tv = UITableView()
-        tv.rowHeight = 58
+        tv.rowHeight = 64
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class SearchResultTableViewCell: UITableViewCell {
     
@@ -70,20 +71,24 @@ class SearchResultTableViewCell: UITableViewCell {
         })
         NSLayoutConstraint.activate([
             albumCoverImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            albumCoverImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            albumCoverImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             albumCoverImageView.widthAnchor.constraint(equalToConstant: 48),
             albumCoverImageView.heightAnchor.constraint(equalToConstant: 48),
             songStackView.leadingAnchor.constraint(equalTo: albumCoverImageView.trailingAnchor, constant: 12),
             songStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            songStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 4),
+            songStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
             songStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
         ])
     }
     
     private func configure(with song: Song) {
-        albumCoverImageView.image = UIImage(systemName: "apple.haptics.and.music.note")
-        artistNameLabel.text = song.title
+        guard let album = HomeViewModel.shared.getAlbumForSong(song, from: HomeViewModel.shared.albums),
+              let imageURL = URL(string: album.image) else { return }
+        
+        albumCoverImageView.kf.setImage(with: imageURL)
+        artistNameLabel.text = album.artist
         songNameLabel.text = song.title
     }
+
 }

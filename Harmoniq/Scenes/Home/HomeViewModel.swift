@@ -31,4 +31,9 @@ class HomeViewModel {
             }
         }
     }
+    
+    func getAlbumForSong(_ song: Song, from albums: Albums) -> AlbumElement? {
+        return albums.first { $0.id == song.albumID }
+    }
+
 }
