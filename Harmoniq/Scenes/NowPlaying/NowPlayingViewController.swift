@@ -165,7 +165,7 @@ class NowPlayingViewController: UIViewController {
             backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            artworkImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
+            artworkImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
             artworkImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             artworkImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             artworkImageView.widthAnchor.constraint(equalTo: artworkImageView.heightAnchor, multiplier: 1),
