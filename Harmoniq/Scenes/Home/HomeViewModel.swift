@@ -36,4 +36,15 @@ class HomeViewModel {
         return albums.first { $0.id == song.albumID }
     }
 
+    func getNextSong(from currentSong: Song, in albums: Albums) -> Song? {
+        guard let album = getAlbumForSong(currentSong, from: albums) else { return nil }
+        
+        guard let currentIndex = album.songs.firstIndex(where: { $0.id == currentSong.id }) else {
+            return nil
+        }
+
+        let nextIndex = currentIndex + 1
+        return nextIndex < album.songs.count ? album.songs[nextIndex] : album.songs.first
+    }
+
 }

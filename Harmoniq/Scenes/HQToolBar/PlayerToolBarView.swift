@@ -155,7 +155,7 @@ class PlayerToolBarView: UIView {
         forwardButton = UIButton()
         forwardButton.configuration = .toolbar()
         forwardButton.configuration?.image = .forward
-        
+        forwardButton.addTarget(self, action: #selector(forwardButtonTapped), for: .touchUpInside)
         buttonStackView.addArrangedSubview(forwardButton)
     }
     
@@ -165,7 +165,10 @@ class PlayerToolBarView: UIView {
         
         addGestureRecognizer(tapGestureRecogniser)
     }
-    
+    @objc private func forwardButtonTapped(_ sender: UIButton) {
+        delegate?.toolbarView(self, didTapForwardButton: sender)
+        print("tapped")
+    }
     @objc private func tapGestureRecognised(_ sender: UITapGestureRecognizer) {
         delegate?.toolbarView(self, tapGestureRecognised: sender)
     }
@@ -187,6 +190,7 @@ class PlayerToolBarView: UIView {
 extension PlayerToolBarView {
     
     func show(withDuration duration: TimeInterval = 0.3) {
+        print("Frame height before show/hide: \(self.frame.height)")
         self.transform = CGAffineTransform(translationX: 0, y: self.frame.height)
         self.isHidden = false
         UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: {
@@ -195,6 +199,7 @@ extension PlayerToolBarView {
     }
     
     func hide(withDuration duration: TimeInterval = 0.3, completion: ((Bool) -> Void)? = nil) {
+        print("Frame height before show/hide: \(self.frame.height)")
         UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseInOut, animations: {
             self.transform = CGAffineTransform(translationX: 0, y: self.frame.height)
         }, completion: { finished in

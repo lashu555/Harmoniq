@@ -88,10 +88,10 @@ public final class GlassyTabBarViewController: UITabBarController {
         }
         tabBar.standardAppearance = appearance
     }
-//    private func updatePlayPauseButton(isPlaying: Bool) {
-//        let icon = isPlaying ? "pause.fill" : "play.fill"
-//        toolbarView?.playButton.setImage(UIImage(systemName: icon), for: .normal)
-//    }
+    //    private func updatePlayPauseButton(isPlaying: Bool) {
+    //        let icon = isPlaying ? "pause.fill" : "play.fill"
+    //        toolbarView?.playButton.setImage(UIImage(systemName: icon), for: .normal)
+    //    }
     private func setupBackdrop() {
         backdropView.clipsToBounds = true
         backdropView.isUserInteractionEnabled = false
@@ -201,6 +201,36 @@ public final class GlassyTabBarViewController: UITabBarController {
         }
     }
     
+    func animateToNowPlaying() {
+        guard let toolbarView = self.toolbarView else {
+            print("toolbar not initialized")
+            return
+        }
+
+        if let heightConstraint = toolbarView.constraints.first(where: { $0.firstAttribute == .height }) {
+            heightConstraint.constant *= 1.4
+
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                self.view.layoutIfNeeded()
+                toolbarView.alpha = 1
+            })
+        } else {
+            let originalFrame = toolbarView.frame
+            let newHeight = originalFrame.height * 1.4
+            let heightDifference = newHeight - originalFrame.height
+
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                toolbarView.frame = CGRect(x: originalFrame.origin.x,
+                                           y: originalFrame.origin.y - heightDifference, 
+                                           width: originalFrame.width,
+                                           height: newHeight)
+                toolbarView.alpha = 1
+            })
+        }
+    }
+
+
+    
     private func captureBackground() -> UIImage? {
         let renderer = UIGraphicsImageRenderer(bounds: view.bounds)
         return renderer.image { context in
@@ -215,28 +245,35 @@ public final class GlassyTabBarViewController: UITabBarController {
             object: nil
         )
     }
-
+    
     @objc private func playerStateChanged() {
         updateToolbarPlayButton()
     }
 }
 extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
+    
     func toolbarView(_ toolbarView: PlayerToolBarView, didTapPlayPause button: UIButton) {
         HQAudioPlayer.shared.togglePlayback()
         updateToolbarPlayButton()
     }
-
+    
     func updateToolbarPlayButton() {
         let isPlaying = HQAudioPlayer.shared.isPlaying
         toolbarView?.playButton.configuration?.image = isPlaying ? UIImage(systemName: "pause.fill")
- : UIImage(systemName: "play.fill")
+        : UIImage(systemName: "play.fill")
     }
-
+    
+    func toolbarView(_ toolbarView: PlayerToolBarView, didTapForwardButton button: UIButton) {
+        currentlyPlayedSong = HomeViewModel.shared.getNextSong(from: currentlyPlayedSong!, in: HomeViewModel.shared.albums)
+    }
+    
     func toolbarView(_ toolbarView: PlayerToolBarView, tapGestureRecognised tapGestureRecogniser: UITapGestureRecognizer) {
         guard let song = currentlyPlayedSong else {return}
         let nowPlayingVC = NowPlayingViewController()
         nowPlayingVC.audioURL = URL(string: song.url)
-        nowPlayingVC.song = song 
+        nowPlayingVC.song = song
+        toolbarView.layoutIfNeeded()
+        animateToNowPlaying()
         present(nowPlayingVC, animated: true)
     }
 }

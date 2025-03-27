@@ -11,4 +11,5 @@ import UIKit
 protocol HQPlayerToolBarViewDelegate: NSObject {
     func toolbarView(_ toolbarView: PlayerToolBarView, didTapPlayPause button: UIButton)
     func toolbarView(_ toolbarView: PlayerToolBarView, tapGestureRecognised tapGestureRecogniser: UITapGestureRecognizer)
+    func toolbarView(_ toolbarView: PlayerToolBarView, didTapForwardButton button: UIButton)
 }
