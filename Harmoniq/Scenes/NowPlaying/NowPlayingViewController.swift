@@ -12,6 +12,7 @@ class NowPlayingViewController: UIViewController {
     
     let audioPlayer = HQAudioPlayer.shared
     var audioURL: URL?
+    var onTap: ((Song)->())?
     var song: Song? {
         didSet { updateUI() }
     }
@@ -98,9 +99,12 @@ class NowPlayingViewController: UIViewController {
            if let url = audioURL, url != audioPlayer.currentURL {
                audioPlayer.play(url: url)
            }
-           updatePlayPauseButton(isPlaying: audioPlayer.isPlaying)
+        updatePlayPauseButton(isPlaying: audioPlayer.isPlaying)
         
-        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateProgress), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 0.1,
+                                     target: self,
+                                     selector: #selector(updateProgress),
+                                     userInfo: nil, repeats: true)
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
             try AVAudioSession.sharedInstance().setActive(true)
@@ -238,6 +242,7 @@ class NowPlayingViewController: UIViewController {
         if let url = previousSong?.url, URL(string: url) != audioPlayer.currentURL {
             audioPlayer.play(url: URL(string: url)!)
         }
+        onTap?(song!)
     }
     
     @objc private func nextTapped() {
@@ -247,6 +252,7 @@ class NowPlayingViewController: UIViewController {
         if let url = nextSong?.url, URL(string: url) != audioPlayer.currentURL {
             audioPlayer.play(url: URL(string: url)!)
         }
+        onTap?(song!)
     }
 }
 

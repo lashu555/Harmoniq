@@ -8,7 +8,6 @@ import UIKit
 import Combine
 
 public final class GlassyTabBarViewController: UITabBarController {
-    
     // MARK: Properties
     private var toolbarView: PlayerToolBarView?
     private var overlayView: HQGradient!
@@ -272,6 +271,9 @@ extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
         let nowPlayingVC = NowPlayingViewController()
         nowPlayingVC.audioURL = URL(string: song.url)
         nowPlayingVC.song = song
+        nowPlayingVC.onTap = { song in
+            self.currentlyPlayedSong = song
+        }
         toolbarView.layoutIfNeeded()
         animateToNowPlaying()
         present(nowPlayingVC, animated: true)
