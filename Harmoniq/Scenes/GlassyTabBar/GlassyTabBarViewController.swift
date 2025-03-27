@@ -276,6 +276,8 @@ extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
         }
         toolbarView.layoutIfNeeded()
         animateToNowPlaying()
+        nowPlayingVC.modalPresentationStyle = .custom
+        nowPlayingVC.transitioningDelegate = nowPlayingVC
         present(nowPlayingVC, animated: true)
     }
 }

@@ -18,6 +18,7 @@ class HQAudioPlayer: NSObject {
     
     private var player: AVPlayer?
     private var playerItem: AVPlayerItem?
+    
     var currentURL: URL?
     weak var delegate: HQAudioPlayerDelegate?
 
@@ -25,6 +26,11 @@ class HQAudioPlayer: NSObject {
         return player?.rate != 0
     }
 
+    var volume: Float {
+        get { return player?.volume ?? 0 }
+        set { player?.volume = max(0, min(newValue, 1)) }
+    }
+    
     private override init() {
         super.init()
     }

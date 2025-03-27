@@ -16,6 +16,8 @@ class NowPlayingViewController: UIViewController {
     var song: Song? {
         didSet { updateUI() }
     }
+    
+    private var panGestureRecognizer: UIPanGestureRecognizer!
     private var timer: Timer?
     private let backgroundView: UIVisualEffectView = {
         let blur = UIBlurEffect(style: .systemMaterial)
@@ -96,11 +98,12 @@ class NowPlayingViewController: UIViewController {
         setupLayout()
         nextButton.addTarget(self, action: #selector(nextTapped), for: .touchUpInside)
         previousButton.addTarget(self, action: #selector(previousTapped), for: .touchUpInside)
-           if let url = audioURL, url != audioPlayer.currentURL {
-               audioPlayer.play(url: url)
-           }
+        volumeSlider.addTarget(self, action: #selector(volumeChanged), for: .valueChanged)
+        volumeSlider.value = audioPlayer.volume
+        if let url = audioURL, url != audioPlayer.currentURL {
+            audioPlayer.play(url: url)
+        }
         updatePlayPauseButton(isPlaying: audioPlayer.isPlaying)
-        
         timer = Timer.scheduledTimer(timeInterval: 0.1,
                                      target: self,
                                      selector: #selector(updateProgress),
@@ -111,6 +114,8 @@ class NowPlayingViewController: UIViewController {
         }catch{
             print(error.localizedDescription)
         }
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleDismissGesture(_:)))
+        view.addGestureRecognizer(panGestureRecognizer)
     }
     
     private func setupViews() {
@@ -226,7 +231,7 @@ class NowPlayingViewController: UIViewController {
         currentTimeLabel.text = formatTime(currentTime)
         remainingTimeLabel.text = "-\(formatTime(timeRemaining))"
     }
-
+    
     private func formatTime(_ time: TimeInterval) -> String {
         guard time.isFinite, !time.isNaN else {
             return "0:00"
@@ -245,6 +250,10 @@ class NowPlayingViewController: UIViewController {
         onTap?(song!)
     }
     
+    @objc func volumeChanged(_ slider: UISlider) {
+        audioPlayer.volume = slider.value
+       }
+       
     @objc private func nextTapped() {
         print("tapped")
         let nextSong = HomeViewModel.shared.getNextSong(from: song!, in: HomeViewModel.shared.albums)
@@ -253,6 +262,53 @@ class NowPlayingViewController: UIViewController {
             audioPlayer.play(url: URL(string: url)!)
         }
         onTap?(song!)
+    }
+    
+    @objc private func handleDismissGesture(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: view)
+        let velocity = gesture.velocity(in: view)
+        
+        let progress = min(max(translation.y / view.frame.height, 0), 1)
+        
+        switch gesture.state {
+        case .changed:
+            if translation.y > 0 {
+                let scale = 1 - (progress * 0.2)
+                
+                view.transform = CGAffineTransform(translationX: 0, y: translation.y * 0.5)
+                    .scaledBy(x: scale, y: scale)
+                
+                view.alpha = 1 - (progress * 0.2)
+            }
+            
+        case .ended:
+            if translation.y > 200 || velocity.y > 500 {
+                dismissNowPlaying()
+            } else {
+                UIView.animate(withDuration: 0.3, delay: 0,
+                               usingSpringWithDamping: 0.7,
+                               initialSpringVelocity: 0.5,
+                               options: [.curveEaseOut, .allowUserInteraction],
+                               animations: {
+                    self.view.transform = .identity
+                    self.view.alpha = 1.0
+                })
+            }
+            
+        default:
+            break
+        }
+    }
+
+    private func dismissNowPlaying() {
+        UIView.animate(withDuration: 0.3, animations: {
+            // Slide down and scale down
+            self.view.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
+                .scaledBy(x: 0.8, y: 0.8)
+            self.view.alpha = 0.0
+        }) { _ in
+            self.dismiss(animated: false)
+        }
     }
 }
 
@@ -266,12 +322,21 @@ extension NowPlayingViewController: HQAudioPlayerDelegate {
             self.updateProgress()
         }
     }
-
+    
     func audioPlayerDidFinishPlaying(successfully: Bool, error: Error?) {
         // Handle playback finish (e.g., play next track)
     }
-
+    
     func audioPlayerDidFailWithError(error: Error) {
         // Handle errors (e.g., show alert)
+    }
+}
+extension NowPlayingViewController: UIViewControllerTransitioningDelegate{
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return NowPlayingTransitionAnimator(isPresenting: true)
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return NowPlayingTransitionAnimator(isPresenting: false)
     }
 }
