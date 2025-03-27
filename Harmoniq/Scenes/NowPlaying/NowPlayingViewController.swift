@@ -335,7 +335,6 @@ class NowPlayingViewController: UIViewController {
     
     private func dismissNowPlaying() {
         UIView.animate(withDuration: 0.3, animations: {
-            // Slide down and scale down
             self.view.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
                 .scaledBy(x: 0.8, y: 0.8)
             self.view.alpha = 0.0
@@ -352,16 +351,15 @@ extension NowPlayingViewController: HQAudioPlayerDelegate {
     func audioPlayerDidStartPlaying() {
         DispatchQueue.main.async {
             self.progressSlider.maximumValue = Float(self.audioPlayer.duration)
+            self.volumeSlider.value = self.audioPlayer.volume
             self.updateProgress()
         }
     }
     
     func audioPlayerDidFinishPlaying(successfully: Bool, error: Error?) {
-        // Handle playback finish (e.g., play next track)
     }
     
     func audioPlayerDidFailWithError(error: Error) {
-        // Handle errors (e.g., show alert)
     }
 }
 extension NowPlayingViewController: UIViewControllerTransitioningDelegate{
