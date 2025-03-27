@@ -274,6 +274,9 @@ extension GlassyTabBarViewController: HQPlayerToolBarViewDelegate {
         nowPlayingVC.onTap = { song in
             self.currentlyPlayedSong = song
         }
+        nowPlayingVC.onDismiss = {
+            self.updateToolbarPlayButton()
+        }
         toolbarView.layoutIfNeeded()
         animateToNowPlaying()
         nowPlayingVC.modalPresentationStyle = .custom

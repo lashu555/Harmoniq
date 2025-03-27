@@ -14,6 +14,7 @@ class NowPlayingViewController: UIViewController {
     var audioURL: URL?
     private var userIsDraggingSlider = false
     var onTap: ((Song)->())?
+    var onDismiss: (()->())?
     var song: Song? {
         didSet { updateUI() }
     }
@@ -334,6 +335,8 @@ class NowPlayingViewController: UIViewController {
     }
     
     private func dismissNowPlaying() {
+        let isPaused = !audioPlayer.isPlaying
+        onDismiss?()
         UIView.animate(withDuration: 0.3, animations: {
             self.view.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
                 .scaledBy(x: 0.8, y: 0.8)
