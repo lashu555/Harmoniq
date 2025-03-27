@@ -34,7 +34,29 @@ class HQAudioPlayer: NSObject {
     private override init() {
         super.init()
     }
-
+    
+    func seek(to time: TimeInterval) {
+        guard let player = player else {
+            print("No player available")
+            return
+        }
+        
+        let safetime = max(0, min(time, duration))
+        
+        let cmTime = CMTime(seconds: safetime, preferredTimescale: 600)
+        
+        player.seek(to: cmTime, toleranceBefore: .zero, toleranceAfter: .zero, completionHandler: { [weak self] finished in
+            if finished {
+                print("Successfully seeked to \(safetime) seconds")
+                DispatchQueue.main.async {
+                    self?.delegate?.audioPlayerDidStartPlaying()
+                }
+            } else {
+                print("Seek operation failed for time: \(safetime)")
+            }
+        })
+    }
+    
     func play(url: URL) {
         if currentURL == url, let player = player {
             player.seek(to: .zero)

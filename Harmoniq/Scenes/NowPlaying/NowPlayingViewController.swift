@@ -12,6 +12,7 @@ class NowPlayingViewController: UIViewController {
     
     let audioPlayer = HQAudioPlayer.shared
     var audioURL: URL?
+    private var userIsDraggingSlider = false
     var onTap: ((Song)->())?
     var song: Song? {
         didSet { updateUI() }
@@ -100,6 +101,11 @@ class NowPlayingViewController: UIViewController {
         previousButton.addTarget(self, action: #selector(previousTapped), for: .touchUpInside)
         volumeSlider.addTarget(self, action: #selector(volumeChanged), for: .valueChanged)
         volumeSlider.value = audioPlayer.volume
+        progressSlider.minimumValue = 0.0
+        progressSlider.maximumValue = 0.0
+        progressSlider.addTarget(self, action: #selector(sliderTouchDown), for: .touchDown)
+        progressSlider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
+        progressSlider.addTarget(self, action: #selector(sliderTouchUp), for: [.touchUpInside, .touchUpOutside])
         if let url = audioURL, url != audioPlayer.currentURL {
             audioPlayer.play(url: url)
         }
@@ -198,12 +204,10 @@ class NowPlayingViewController: UIViewController {
     
     private func updateUI() {
         guard let song, let album = HomeViewModel.shared.getAlbumForSong(song, from: HomeViewModel.shared.albums), let imageURL = URL(string: album.image) else {return}
-        progressSlider.maximumValue = Float(audioPlayer.duration)
         artworkImageView.kf.setImage(with: imageURL)
         songLabel.text = song.title
         artistLabel.text = album.artist
-        progressSlider.value = Float(audioPlayer.currentTime)
-        updatePlayPauseButton(isPlaying: audioPlayer.isPlaying)
+        updateSliderPosition()
     }
     
     private func updatePlayPauseButton(isPlaying: Bool) {
@@ -226,10 +230,22 @@ class NowPlayingViewController: UIViewController {
         let duration = audioPlayer.duration
         let timeRemaining = duration - currentTime
         
-        progressSlider.value = Float(currentTime)
-        
         currentTimeLabel.text = formatTime(currentTime)
         remainingTimeLabel.text = "-\(formatTime(timeRemaining))"
+        updateSliderPosition()
+    }
+    
+    private func updateSliderPosition() {
+        guard !userIsDraggingSlider else { return }
+        progressSlider.value = Float(audioPlayer.currentTime)
+    }
+    
+    private func performSeek(_ sliderValue: Float) {
+        let duration = audioPlayer.duration
+        guard duration > 0 else { return }
+        
+        let seekTime = Double(sliderValue)
+        audioPlayer.seek(to: seekTime)
     }
     
     private func formatTime(_ time: TimeInterval) -> String {
@@ -252,8 +268,16 @@ class NowPlayingViewController: UIViewController {
     
     @objc func volumeChanged(_ slider: UISlider) {
         audioPlayer.volume = slider.value
-       }
-       
+    }
+    
+    @objc private func sliderValueChanged(_ sender: UISlider) {
+        let currentTime = Double(sender.value)
+        let remainingTime = audioPlayer.duration - currentTime
+        
+        currentTimeLabel.text = formatTime(currentTime)
+        remainingTimeLabel.text = "-\(formatTime(remainingTime))"
+    }
+    
     @objc private func nextTapped() {
         print("tapped")
         let nextSong = HomeViewModel.shared.getNextSong(from: song!, in: HomeViewModel.shared.albums)
@@ -262,6 +286,15 @@ class NowPlayingViewController: UIViewController {
             audioPlayer.play(url: URL(string: url)!)
         }
         onTap?(song!)
+    }
+    
+    @objc private func sliderTouchDown(_ sender: UISlider) {
+        userIsDraggingSlider = true
+    }
+
+    @objc private func sliderTouchUp(_ sender: UISlider) {
+        userIsDraggingSlider = false
+        performSeek(sender.value)
     }
     
     @objc private func handleDismissGesture(_ gesture: UIPanGestureRecognizer) {
@@ -299,7 +332,7 @@ class NowPlayingViewController: UIViewController {
             break
         }
     }
-
+    
     private func dismissNowPlaying() {
         UIView.animate(withDuration: 0.3, animations: {
             // Slide down and scale down
