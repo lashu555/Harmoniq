@@ -93,7 +93,8 @@ class NowPlayingViewController: UIViewController {
         audioPlayer.delegate = self
         setupViews()
         setupLayout()
-        
+        nextButton.addTarget(self, action: #selector(nextTapped), for: .touchUpInside)
+        previousButton.addTarget(self, action: #selector(previousTapped), for: .touchUpInside)
            if let url = audioURL, url != audioPlayer.currentURL {
                audioPlayer.play(url: url)
            }
@@ -232,11 +233,20 @@ class NowPlayingViewController: UIViewController {
     }
     
     @objc private func previousTapped() {
-        // Implement previous button functionality
+        let previousSong = HomeViewModel.shared.getPreviousSong(from: song!, in: HomeViewModel.shared.albums)
+        song = previousSong
+        if let url = previousSong?.url, URL(string: url) != audioPlayer.currentURL {
+            audioPlayer.play(url: URL(string: url)!)
+        }
     }
     
     @objc private func nextTapped() {
-        // Implement next button functionality
+        print("tapped")
+        let nextSong = HomeViewModel.shared.getNextSong(from: song!, in: HomeViewModel.shared.albums)
+        song = nextSong
+        if let url = nextSong?.url, URL(string: url) != audioPlayer.currentURL {
+            audioPlayer.play(url: URL(string: url)!)
+        }
     }
 }
 
