@@ -5,3 +5,5 @@ Harmoniq is a music player app developed in Swift. It provides an intuitive and 
 Play music: Seamlessly play your favorite tracks.
 
 User-friendly interface: Easy to navigate and use.
+
+Manually built api!
